@@ -69,8 +69,8 @@ class _MygridState extends State<Mygrid> {
             itemCount: filtered.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              crossAxisSpacing: 10.0,
-              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 5.0,
+              mainAxisSpacing: 5.0,
               childAspectRatio: 0.7,
             ),
             itemBuilder: (BuildContext context, int index) {

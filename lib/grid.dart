@@ -56,8 +56,8 @@ class _MygridState extends State<Mygrid> {
         final filtered = query.isEmpty
             ? snapshot.data!
             : snapshot.data!
-                .where((item) => item['title']!.toLowerCase().contains(query))
-                .toList();
+                  .where((item) => item['title']!.toLowerCase().contains(query))
+                  .toList();
 
         if (filtered.isEmpty) {
           return const Center(child: Text('No results found'));
@@ -93,44 +93,48 @@ class _MygridState extends State<Mygrid> {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withAlpha(30),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withAlpha(30),
                             child: Center(
                               child: Icon(
                                 Icons.broken_image,
                                 size: 48,
-                                color:
-                                    Theme.of(context).colorScheme.primary,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
                           );
                         },
                       ),
                     ),
-                    Padding(
+                    Container(
+                      color: Colors.white, 
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      child: Column(
+                        children: [
+                          Text(
+                            title,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Rs $price',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        'Rs $price',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
                   ],
                 ),
               );

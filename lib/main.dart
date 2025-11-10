@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
           ? const ColorScheme.dark(
               primary: Color.fromARGB(255, 0, 149, 255),
               secondary: Color.fromARGB(255, 25, 0, 255),
-              surface: Color.fromARGB(255, 50, 49, 49), 
+              surface: Color.fromARGB(255, 85, 85, 85), 
               onPrimary: Colors.white,
               onSecondary: Colors.white,
             )

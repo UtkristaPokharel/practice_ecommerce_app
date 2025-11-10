@@ -10,6 +10,10 @@ class MyProfile extends StatefulWidget {
   State<MyProfile> createState() => _MyProfileState();
 }
 
+String _name = "John Doe";
+String _email = "john.doe@example.com";
+
+
 class _MyProfileState extends State<MyProfile> {
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
@@ -102,7 +106,7 @@ class _MyProfileState extends State<MyProfile> {
 
               const SizedBox(height: 12),
               Text(
-                "John Doe",
+                _name,
                 style: textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: isDark ? Colors.white : Colors.black,
@@ -110,7 +114,7 @@ class _MyProfileState extends State<MyProfile> {
               ),
               const SizedBox(height: 4),
               Text(
-                "john.doe@example.com",
+                _email,
                 style: textTheme.bodyMedium?.copyWith(
                   color: isDark ? Colors.grey[400] : Colors.grey[700],
                 ),
@@ -126,8 +130,19 @@ class _MyProfileState extends State<MyProfile> {
               _buildListTile(
                 icon: Icons.edit,
                 title: "Edit Profile",
-                onTap: () {
-                  Navigator.pushNamed(context, '/edit-profile');
+                onTap: () async {
+                  // Navigate and wait for result
+                  final result = await Navigator.pushNamed(
+                    context,
+                    '/edit-profile',
+                  );
+
+                  if (result != null && result is Map<String, String>) {
+                    setState(() {
+                      _name = result['name'] ?? _name;
+                      _email = result['email'] ?? _email;
+                    });
+                  }
                 },
               ),
               _buildListTile(

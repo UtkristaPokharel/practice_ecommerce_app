@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
 import 'dart:io';
 
 class MyProfile extends StatefulWidget {
@@ -21,7 +22,7 @@ class _MyProfileState extends State<MyProfile> {
         _imageFile = File(pickedFile.path);
       });
     }
-    Navigator.pop(context); 
+    Navigator.pop(context);
   }
 
   void _showImageSourceSelection() {
@@ -57,7 +58,7 @@ class _MyProfileState extends State<MyProfile> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: SafeArea(
@@ -72,8 +73,9 @@ class _MyProfileState extends State<MyProfile> {
                     backgroundImage: _imageFile != null
                         ? FileImage(_imageFile!)
                         : const NetworkImage(
-                            "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-                          ) as ImageProvider,
+                                "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+                              )
+                              as ImageProvider,
                   ),
                   Positioned(
                     bottom: 4,
@@ -124,17 +126,23 @@ class _MyProfileState extends State<MyProfile> {
               _buildListTile(
                 icon: Icons.edit,
                 title: "Edit Profile",
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, '/edit-profile');
+                },
               ),
               _buildListTile(
                 icon: Icons.location_on,
                 title: "Shipping Address",
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, '/shipping-address');
+                },
               ),
               _buildListTile(
                 icon: Icons.shopping_bag,
                 title: "My Orders",
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, '/my-orders');
+                },
               ),
 
               const SizedBox(height: 24),
@@ -188,7 +196,8 @@ class _MyProfileState extends State<MyProfile> {
         title: Text(
           title,
           style: TextStyle(
-            color: textColor ??
+            color:
+                textColor ??
                 (isDark
                     ? Colors.white.withOpacity(0.9)
                     : Colors.black.withOpacity(0.9)),

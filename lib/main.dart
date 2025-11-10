@@ -3,6 +3,9 @@ import 'package:ecommerce_practice/grid.dart';
 import 'package:ecommerce_practice/searchbar.dart';
 import 'package:ecommerce_practice/bottom_navbar.dart';
 import 'package:ecommerce_practice/profilepage.dart';
+import 'edit_profile.dart';
+import 'shipping_address.dart';
+import 'my_orders.dart';
 
 void main() {
   runApp(const MyApp());
@@ -64,6 +67,11 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: themeData,
+        routes: {
+    '/edit-profile': (context) => const EditProfilePage(),
+    '/shipping-address': (context) => const ShippingAddressPage(),
+    '/my-orders': (context) => const MyOrdersPage(),
+  },
       home: Scaffold(
         appBar: AppBar(title: const Text('My E-commerce App')),
         body: IndexedStack(

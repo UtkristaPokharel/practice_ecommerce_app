@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/grid.dart';
 import 'package:ecommerce_practice/searchbar.dart';
 import 'package:ecommerce_practice/bottom_navbar.dart';
+import 'package:ecommerce_practice/profilepage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +18,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool isDark = false;
   String searchQuery = '';
+  int _selectedIndex = 0;
 
   void _handleThemeToggle(bool newIsDark) {
     setState(() {
@@ -27,6 +29,12 @@ class _MyAppState extends State<MyApp> {
   void _handleSearchChanged(String newQuery) {
     setState(() {
       searchQuery = newQuery;
+    });
+  }
+
+  void _onNavTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
     });
   }
 
@@ -58,21 +66,32 @@ class _MyAppState extends State<MyApp> {
       theme: themeData,
       home: Scaffold(
         appBar: AppBar(title: const Text('My E-commerce App')),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: <Widget>[
-              MySearchBar(
-                isDark: isDark,
-                onThemeToggle: _handleThemeToggle,
-                onSearchChanged: _handleSearchChanged,
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: [
+            // Home
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
+                  MySearchBar(
+                    isDark: isDark,
+                    onThemeToggle: _handleThemeToggle,
+                    onSearchChanged: _handleSearchChanged,
+                  ),
+                  const SizedBox(height: 16.0),
+                  Mygrid(searchQuery: searchQuery),
+                ],
               ),
-              const SizedBox(height: 16.0),
-              Mygrid(searchQuery: searchQuery),
-            ],
-          ),
+            ),
+
+            const Center(child: Text('Categories')),
+            const Center(child: Text('Favorites')),
+            const Center(child: Text('Cart')),
+            const MyProfile(),
+          ],
         ),
-        bottomNavigationBar: const BottomNavbar(),
+        bottomNavigationBar: BottomNavbar(index: _selectedIndex, onTap: _onNavTapped),
       ),
     );
   }

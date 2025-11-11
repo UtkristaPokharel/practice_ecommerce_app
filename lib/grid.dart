@@ -4,7 +4,15 @@ import 'package:http/http.dart' as http;
 
 class Mygrid extends StatefulWidget {
   final String searchQuery;
-  const Mygrid({super.key, this.searchQuery = ''});
+  final double minPrice;
+  final double maxPrice;
+
+  const Mygrid({
+    super.key,
+    this.searchQuery = '',
+    this.minPrice = 0.0,
+    this.maxPrice = double.infinity,
+  });
 
   @override
   State<Mygrid> createState() => _MygridState();
@@ -30,12 +38,17 @@ class _MygridState extends State<Mygrid> {
         return {
           'title': item['product_name'],
           'image': item['image'],
-          'price': item['price'],
+          'price': item['price']?.toString()??'0',
         };
       }).toList();
     } else {
       throw Exception('Failed to load products');
     }
+  }
+
+  double _parsePrice(String raw){
+    final cleaned = raw.replaceAll(RegExp(r'[^0-9.]'), '');
+    return double.tryParse(cleaned) ?? 0.0;
   }
 
   @override
@@ -53,11 +66,17 @@ class _MygridState extends State<Mygrid> {
           return const Center(child: Text('No products found'));
         }
 
-        final filtered = query.isEmpty
-            ? snapshot.data!
-            : snapshot.data!
-                  .where((item) => item['title']!.toLowerCase().contains(query))
-                  .toList();
+        final filtered = snapshot.data!
+            .where((item) {
+              final title = item['title']!.toLowerCase();
+              final matchesName = query.isEmpty ? true : title.contains(query);
+
+              final priceValue = _parsePrice(item['price']!);
+              final matchesPrice = priceValue >= widget.minPrice && priceValue <= widget.maxPrice;
+
+              return matchesName && matchesPrice;
+            })
+            .toList();
 
         if (filtered.isEmpty) {
           return const Center(child: Text('No results found'));
@@ -108,7 +127,7 @@ class _MygridState extends State<Mygrid> {
                       ),
                     ),
                     Container(
-                      color: Colors.white, 
+                      color: Colors.white,
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [

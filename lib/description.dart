@@ -17,21 +17,34 @@ class DescriptionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80),
+        child: AppBar(
+          title: Padding(
+            padding: const EdgeInsets.all(10), 
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Image.network(imageUrl, height: 200),
-            const SizedBox(height: 16),
+            Image.network(imageUrl, width: 400, height: 300),
+            const SizedBox(height: 20),
             Text(
               'Rs $price',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold , color: Colors.green),
             ),
             const SizedBox(height: 8),
             Text(
               description.isEmpty ? 'No description available.' : description,
-              style: const TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 17),
             ),
           ],
         ),

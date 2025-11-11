@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'dart:io';
+import 'package:ecommerce_practice/theme_controller.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
@@ -68,7 +69,6 @@ class _MyProfileState extends State<MyProfile> {
         child: SafeArea(
           child: Column(
             children: [
-              // Profile header
               Stack(
                 alignment: Alignment.bottomRight,
                 children: [
@@ -157,6 +157,34 @@ class _MyProfileState extends State<MyProfile> {
                 title: "My Orders",
                 onTap: () {
                   Navigator.pushNamed(context, '/my-orders');
+                },
+              ),
+
+              // Theme toggle moved here (under My Orders)
+              const SizedBox(height: 8),
+              ValueListenableBuilder<bool>(
+                valueListenable: isDarkNotifier,
+                builder: (context, isDark, _) {
+                  return Card(
+                    elevation: 1,
+                    color: theme.colorScheme.surface,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: SwitchListTile(
+                      value: isDark,
+                      onChanged: (val) => isDarkNotifier.value = val,
+                      title: Text(
+                        'Dark Mode',
+                        style: TextStyle(
+                          color: isDark
+                              ? Colors.white.withOpacity(0.9)
+                              : Colors.black.withOpacity(0.9),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      secondary: Icon(isDark ? Icons.dark_mode : Icons.light_mode,
+                          color: theme.colorScheme.primary),
+                    ),
+                  );
                 },
               ),
 

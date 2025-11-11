@@ -1,8 +1,10 @@
+import 'package:ecommerce_practice/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/grid.dart';
 import 'package:ecommerce_practice/searchbar.dart';
 import 'package:ecommerce_practice/bottom_navbar.dart';
 import 'package:ecommerce_practice/profilepage.dart';
+import 'package:ecommerce_practice/theme_controller.dart';
 import 'edit_profile.dart';
 import 'shipping_address.dart';
 import 'my_orders.dart';
@@ -19,15 +21,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isDark = false;
   String searchQuery = '';
   int _selectedIndex = 0;
-
-  void _handleThemeToggle(bool newIsDark) {
-    setState(() {
-      isDark = newIsDark;
-    });
-  }
 
   void _handleSearchChanged(String newQuery) {
     setState(() {
@@ -44,63 +39,66 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
-    final ThemeData themeData = ThemeData(
-      brightness: isDark ? Brightness.dark : Brightness.light,
-      useMaterial3: true,
-      colorScheme: isDark
-          ? const ColorScheme.dark(
-              primary: Color.fromARGB(255, 0, 149, 255),
-              secondary: Color.fromARGB(255, 25, 0, 255),
-              surface: Color.fromARGB(255, 1, 1, 1), 
-              onPrimary: Colors.white,
-              onSecondary: Colors.white,
-            )
-          : const ColorScheme.light(
-              primary: Colors.blueAccent,
-              secondary: Color.fromARGB(255, 0, 30, 255),
-              surface: Colors.white,
-              onPrimary: Colors.white,
-              onSecondary: Colors.white,
-            ),
-    );
+    return ValueListenableBuilder<bool>(
+      valueListenable: isDarkNotifier,
+      builder: (context, isDark, _) {
+        final ThemeData themeData = ThemeData(
+          brightness: isDark ? Brightness.dark : Brightness.light,
+          useMaterial3: true,
+          colorScheme: isDark
+              ? const ColorScheme.dark(
+                  primary: Color.fromARGB(255, 0, 149, 255),
+                  secondary: Color.fromARGB(255, 25, 0, 255),
+                  surface: Color.fromARGB(255, 1, 1, 1), 
+                  onPrimary: Colors.white,
+                  onSecondary: Colors.white,
+                )
+              : const ColorScheme.light(
+                  primary: Colors.blueAccent,
+                  secondary: Color.fromARGB(255, 0, 30, 255),
+                  surface: Colors.white,
+                  onPrimary: Colors.white,
+                  onSecondary: Colors.white,
+                ),
+        );
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: themeData,
-        routes: {
-    '/edit-profile': (context) => const EditProfilePage(),
-    '/shipping-address': (context) => const ShippingAddressPage(),
-    '/my-orders': (context) => const MyOrdersPage(),
-  },
-      home: Scaffold(
-        appBar: AppBar(title: const Text('My E-commerce App')),
-        body: IndexedStack(
-          index: _selectedIndex,
-          children: [
-            // Home
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: <Widget>[
-                  MySearchBar(
-                    isDark: isDark,
-                    onThemeToggle: _handleThemeToggle,
-                    onSearchChanged: _handleSearchChanged,
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: themeData,
+          routes: {
+            '/edit-profile': (context) => const EditProfilePage(),
+            '/shipping-address': (context) => const ShippingAddressPage(),
+            '/my-orders': (context) => const MyOrdersPage(),
+          },
+          home: Scaffold(
+            appBar: AppBar(title: const Text('My E-commerce App')),
+            body: IndexedStack(
+              index: _selectedIndex,
+              children: [
+                // Home
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: <Widget>[
+                      MySearchBar(
+                        onSearchChanged: _handleSearchChanged,
+                      ),
+                      const SizedBox(height: 16.0),
+                      Mygrid(searchQuery: searchQuery),
+                    ],
                   ),
-                  const SizedBox(height: 16.0),
-                  Mygrid(searchQuery: searchQuery),
-                ],
-              ),
-            ),
+                ),
 
-            const Center(child: Text('Categories')),
-            const Center(child: Text('Favorites')),
-            const Center(child: Text('Cart')),
-            const MyProfile(),
-          ],
-        ),
-        bottomNavigationBar: BottomNavbar(index: _selectedIndex, onTap: _onNavTapped),
-      ),
+                const MyCategorie(),
+                const Center(child: Text('Favorites')),
+                const Center(child: Text('Cart')),
+                const MyProfile(),
+              ],
+            ),
+            bottomNavigationBar: BottomNavbar(index: _selectedIndex, onTap: _onNavTapped),
+          ),
+        );
+      },
     );
   }
 }

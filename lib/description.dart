@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecommerce_practice/favourites.dart';
 
 class DescriptionPage extends StatefulWidget {
   final String title;
@@ -21,6 +22,39 @@ class DescriptionPage extends StatefulWidget {
 class _DescriptionPageState extends State<DescriptionPage> {
   
   bool isFavorite = false;
+  late final FavoriteItem _item;
+  VoidCallback? _listener;
+
+  @override
+  void initState() {
+    super.initState();
+    _item = FavoriteItem(
+      title: widget.title,
+      imageUrl: widget.imageUrl,
+      price: widget.price,
+      description: widget.description,
+    );
+
+    // initialize state based on store
+    isFavorite = isFavorite = favoritesNotifier.value.contains(_item);
+
+    // listen for external changes so UI stays consistent
+    _listener = () {
+      final currentlyFav = favoritesNotifier.value.contains(_item);
+      if (mounted && currentlyFav != isFavorite) {
+        setState(() {
+          isFavorite = currentlyFav;
+        });
+      }
+    };
+    favoritesNotifier.addListener(_listener!);
+  }
+
+  @override
+  void dispose() {
+    if (_listener != null) favoritesNotifier.removeListener(_listener!);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,9 +150,8 @@ class _DescriptionPageState extends State<DescriptionPage> {
                   ),
                   color: isFavorite ? Colors.red : null,
                   onPressed: () {
-                    setState(() {
-                      isFavorite = !isFavorite; 
-                    });
+                    // update shared store and local UI
+                    toggleFavorite(_item);
                   },
                 ),
               ],

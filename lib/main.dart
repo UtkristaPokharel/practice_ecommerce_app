@@ -5,6 +5,7 @@ import 'package:ecommerce_practice/searchbar.dart';
 import 'package:ecommerce_practice/bottom_navbar.dart';
 import 'package:ecommerce_practice/profilepage.dart';
 import 'package:ecommerce_practice/theme_controller.dart';
+import 'package:ecommerce_practice/favourites.dart';
 import 'package:ecommerce_practice/edit_profile.dart';
 import 'package:ecommerce_practice/shipping_address.dart';
 import 'package:ecommerce_practice/my_orders.dart';
@@ -93,7 +94,7 @@ class _MyAppState extends State<MyApp> {
                 ),
 
                 const MyCategorie(),
-                const Center(child: Text('Favorites')),
+                const FavouritesPage(),
                 const Center(child: Text('Cart')),
                 const MyProfile(),
               ],

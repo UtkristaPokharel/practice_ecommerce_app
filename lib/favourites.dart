@@ -1,0 +1,100 @@
+import 'package:flutter/material.dart';
+import 'package:ecommerce_practice/description.dart';
+
+/// Favorite model and in-memory store (moved here so there's a single file)
+class FavoriteItem {
+	final String title;
+	final String imageUrl;
+	final String price;
+	final String description;
+
+	FavoriteItem({
+		required this.title,
+		required this.imageUrl,
+		required this.price,
+		this.description = '',
+	});
+
+	@override
+	bool operator ==(Object other) {
+		if (identical(this, other)) return true;
+		return other is FavoriteItem && other.title == title && other.imageUrl == imageUrl;
+	}
+
+	@override
+	int get hashCode => Object.hash(title, imageUrl);
+}
+
+final ValueNotifier<List<FavoriteItem>> favoritesNotifier = ValueNotifier<List<FavoriteItem>>([]);
+
+bool isFavorite(FavoriteItem item) {
+	return favoritesNotifier.value.contains(item);
+}
+
+void addFavorite(FavoriteItem item) {
+	final list = List<FavoriteItem>.from(favoritesNotifier.value);
+	if (!list.contains(item)) {
+		list.add(item);
+		favoritesNotifier.value = list;
+	}
+}
+
+void removeFavorite(FavoriteItem item) {
+	final list = List<FavoriteItem>.from(favoritesNotifier.value);
+	if (list.remove(item)) {
+		favoritesNotifier.value = list;
+	}
+}
+
+void toggleFavorite(FavoriteItem item) {
+	if (isFavorite(item)) {
+		removeFavorite(item);
+	} else {
+		addFavorite(item);
+	}
+}
+
+class FavouritesPage extends StatelessWidget {
+	const FavouritesPage({super.key});
+
+	@override
+	Widget build(BuildContext context) {
+		return Scaffold(
+			// appBar: AppBar(title: const Text('Favorites')),
+			body: ValueListenableBuilder<List<FavoriteItem>>(
+				valueListenable: favoritesNotifier,
+				builder: (context, list, _) {
+					if (list.isEmpty) {
+						return const Center(child: Text('No favorites yet'));
+					}
+
+					return ListView.builder(
+						itemCount: list.length,
+						itemBuilder: (context, index) {
+							final item = list[index];
+							return ListTile(
+								leading: Image.network(item.imageUrl, width: 56, height: 56, fit: BoxFit.cover),
+								title: Text(item.title),
+								subtitle: Text('Rs ${item.price}'),
+								trailing: IconButton(
+									icon: const Icon(Icons.delete_outline),
+									onPressed: () => removeFavorite(item),
+								),
+								onTap: () {
+									Navigator.of(context).push(MaterialPageRoute(
+										builder: (_) => DescriptionPage(
+											title: item.title,
+											imageUrl: item.imageUrl,
+											price: item.price,
+											description: item.description,
+										),
+									));
+								},
+							);
+						},
+					);
+				},
+			),
+		);
+	}
+}

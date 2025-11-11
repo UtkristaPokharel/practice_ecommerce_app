@@ -5,9 +5,9 @@ import 'package:ecommerce_practice/searchbar.dart';
 import 'package:ecommerce_practice/bottom_navbar.dart';
 import 'package:ecommerce_practice/profilepage.dart';
 import 'package:ecommerce_practice/theme_controller.dart';
-import 'edit_profile.dart';
-import 'shipping_address.dart';
-import 'my_orders.dart';
+import 'package:ecommerce_practice/edit_profile.dart';
+import 'package:ecommerce_practice/shipping_address.dart';
+import 'package:ecommerce_practice/my_orders.dart';
 
 void main() {
   runApp(const MyApp());
@@ -84,7 +84,10 @@ class _MyAppState extends State<MyApp> {
                         onSearchChanged: _handleSearchChanged,
                       ),
                       const SizedBox(height: 16.0),
-                      Mygrid(searchQuery: searchQuery),
+                      Mygrid(
+                        searchQuery: searchQuery,
+                        onCategoriesFetched: (_) {},
+                      ),
                     ],
                   ),
                 ),

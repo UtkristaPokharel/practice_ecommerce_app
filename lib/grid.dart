@@ -6,12 +6,16 @@ class Mygrid extends StatefulWidget {
   final String searchQuery;
   final double minPrice;
   final double maxPrice;
+  final String category;
+  final ValueChanged<List<String>> onCategoriesFetched;
 
   const Mygrid({
     super.key,
     this.searchQuery = '',
     this.minPrice = 0.0,
     this.maxPrice = double.infinity,
+    this.category = 'All',
+    required this.onCategoriesFetched,
   });
 
   @override
@@ -34,11 +38,21 @@ class _MygridState extends State<Mygrid> {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body)['data'] as List;
+
+      final categotySet =<String>{};
+      for (var item in data) {
+        final category = item['category_name'];
+        if (category != null) {
+          categotySet.add(category);
+        }
+      }
+      widget.onCategoriesFetched(['All', ...categotySet.toList()]);
       return data.map<Map<String, String>>((item) {
         return {
           'title': item['product_name'],
           'image': item['image'],
           'price': item['price']?.toString()??'0',
+          'category': item['category_name'] ?? 'Other',
         };
       }).toList();
     } else {
@@ -74,7 +88,11 @@ class _MygridState extends State<Mygrid> {
               final priceValue = _parsePrice(item['price']!);
               final matchesPrice = priceValue >= widget.minPrice && priceValue <= widget.maxPrice;
 
-              return matchesName && matchesPrice;
+              final matchesCategory = widget.category == 'All'
+                  ? true
+                  : item['category'] == widget.category;
+
+              return matchesName && matchesPrice && matchesCategory;
             })
             .toList();
 

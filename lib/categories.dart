@@ -13,15 +13,17 @@ class MyCategorie extends StatefulWidget {
 class _MyCategorieState extends State<MyCategorie> {
   String searchQuery = '';
 
-  double _priceRangeStart =0.0;
-  double _priceRangeEnd =1000.0;
-  final double _minPrice =0.0;
-  final double _maxPrice =1000.0;
+  double _priceRangeStart = 0.0;
+  double _priceRangeEnd = 1000.0;
+  final double _minPrice = 0.0;
+  final double _maxPrice = 1000.0;
+
+  List<String> categories = ['All'];
+  String selectedCategory = 'All';
 
   @override
   void initState() {
     super.initState();
-    // preserve any initial searchQuery passed to the widget
     searchQuery = widget.searchQuery;
   }
 
@@ -38,17 +40,51 @@ class _MyCategorieState extends State<MyCategorie> {
     });
   }
 
+  Widget _categorySelector() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: categories.map((category) {
+          final isSelected = category == selectedCategory;
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedCategory = category;
+              });
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.blue : Colors.grey[300],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                category,
+                style: TextStyle(
+                  color: isSelected ? Colors.white : Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: <Widget>[
-          MySearchBar(
-            onSearchChanged: _handleSearchChanged,
-          ),
-           const SizedBox(height: 16.0),
-           Column(
+          // Search bar
+          MySearchBar(onSearchChanged: _handleSearchChanged),
+          const SizedBox(height: 16.0),
+
+          // Price filter
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
@@ -67,11 +103,25 @@ class _MyCategorieState extends State<MyCategorie> {
                 onChanged: _handlePriceRangeChanged,
               ),
             ],
-           ),
-           Mygrid(
+          ),
+          const SizedBox(height: 16.0),
+
+          // Category selector
+          _categorySelector(),
+          const SizedBox(height: 16.0),
+
+          // Product grid
+          Mygrid(
             searchQuery: searchQuery,
             minPrice: _priceRangeStart,
-            maxPrice: _priceRangeEnd,),
+            maxPrice: _priceRangeEnd,
+            category: selectedCategory,
+            onCategoriesFetched: (fetchedCategories) {
+              setState(() {
+                categories = fetchedCategories;
+              });
+            },
+          ),
         ],
       ),
     );

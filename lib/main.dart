@@ -8,7 +8,7 @@ import 'package:ecommerce_practice/controller/theme_controller.dart';
 import 'package:ecommerce_practice/pages/favourites.dart';
 import 'package:ecommerce_practice/profilepages/edit_profile.dart';
 import 'package:ecommerce_practice/profilepages/shipping_address.dart';
-import 'package:ecommerce_practice/pages/my_orders.dart';
+import 'package:ecommerce_practice/profilepages/my_orders.dart';
 
 void main() {
   runApp(const MyApp());

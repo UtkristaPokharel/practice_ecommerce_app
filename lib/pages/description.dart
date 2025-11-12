@@ -35,10 +35,8 @@ class _DescriptionPageState extends State<DescriptionPage> {
       description: widget.description,
     );
 
-    // initialize state based on store
     isFavorite = isFavorite = favoritesNotifier.value.contains(_item);
 
-    // listen for external changes so UI stays consistent
     _listener = () {
       final currentlyFav = favoritesNotifier.value.contains(_item);
       if (mounted && currentlyFav != isFavorite) {
@@ -150,7 +148,6 @@ class _DescriptionPageState extends State<DescriptionPage> {
                   ),
                   color: isFavorite ? Colors.red : null,
                   onPressed: () {
-                    // update shared store and local UI
                     toggleFavorite(_item);
                   },
                 ),

@@ -80,7 +80,7 @@ class FavouritesPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green,
+                    color: Color.fromARGB(255, 254, 30, 30),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -97,7 +97,10 @@ class FavouritesPage extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                         title: Text(item.title),
-                        subtitle: Text('Rs ${item.price}'),
+                        subtitle: Text('Rs ${item.price}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green)),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete),
                           color: Colors.red,

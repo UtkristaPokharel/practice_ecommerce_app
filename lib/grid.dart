@@ -49,7 +49,7 @@ class _MygridState extends State<Mygrid> {
           categotySet.add(category);
         }
       }
-      widget.onCategoriesFetched(['All', ...categotySet.toList()]);
+      widget.onCategoriesFetched(['All', ...categotySet]);
       return data.map<Map<String, String>>((item) {
         return {
           'title': item['product_name'],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/pages/description.dart';
+import 'package:ecommerce_practice/profilepages/my_orders.dart';
 
 class CartItem {
   final String title;
@@ -249,8 +250,47 @@ class CartPage extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
+                        // Get selected items
+                        final selectedItems = list
+                            .where((item) => item.isSelected)
+                            .toList();
+
+                        if (selectedItems.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please select items to checkout'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        // Transfer selected items to orders
+                        for (var item in selectedItems) {
+                          addOrder(
+                            OrderItem(
+                              title: item.title,
+                              imageUrl: item.imageUrl,
+                              price: item.price,
+                              description: item.description,
+                              quantity: item.quantity,
+                              orderDate: DateTime.now(),
+                            ),
+                          );
+                        }
+
+                        // Remove selected items from cart
+                        final remainingItems = list
+                            .where((item) => !item.isSelected)
+                            .toList();
+                        cartNotifier.value = remainingItems;
+
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Checkout clicked')),
+                          SnackBar(
+                            content: Text(
+                              'Order placed successfully! ${selectedItems.length} item(s) ordered.',
+                            ),
+                            backgroundColor: Colors.green,
+                          ),
                         );
                       },
                       child: const Text('Checkout'),

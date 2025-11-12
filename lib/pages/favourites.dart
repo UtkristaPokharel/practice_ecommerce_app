@@ -63,7 +63,7 @@ class FavouritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-                   appBar: AppBar(title: const Text('My Favourites')),
+      appBar: AppBar(title: const Text('My Favourites')),
       body: ValueListenableBuilder<List<FavoriteItem>>(
         valueListenable: favoritesNotifier,
         builder: (context, list, _) {
@@ -90,10 +90,13 @@ class FavouritesPage extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                         title: Text(item.title),
-                        subtitle: Text('Rs ${item.price}',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green)),
+                        subtitle: Text(
+                          'Rs ${item.price}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete),
                           color: Colors.red,

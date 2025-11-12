@@ -76,7 +76,7 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-             appBar: AppBar(title: const Text('My Cart')),
+      appBar: AppBar(title: const Text('My Cart')),
       body: ValueListenableBuilder<List<CartItem>>(
         valueListenable: cartNotifier,
         builder: (context, list, _) {
@@ -86,8 +86,7 @@ class CartPage extends StatelessWidget {
 
           return Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.all(16.0)),
+              const Padding(padding: EdgeInsets.all(16.0)),
               Expanded(
                 child: ListView.builder(
                   itemCount: list.length,

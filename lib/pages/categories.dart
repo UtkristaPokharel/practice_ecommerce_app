@@ -84,7 +84,7 @@ class _MyCategorieState extends State<MyCategorie> {
             // Search bar
             MySearchBar(onSearchChanged: _handleSearchChanged),
             const SizedBox(height: 16.0),
-      
+
             // Price filter
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,11 +107,11 @@ class _MyCategorieState extends State<MyCategorie> {
               ],
             ),
             const SizedBox(height: 16.0),
-      
+
             // Category selector
             _categorySelector(),
             const SizedBox(height: 16.0),
-      
+
             // Product grid
             Mygrid(
               searchQuery: searchQuery,

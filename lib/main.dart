@@ -83,7 +83,6 @@ class _MyAppState extends State<MyApp> {
             '/my-orders': (context) => const MyOrdersPage(),
           },
           home: Scaffold(
-            // appBar: AppBar(title: const Text('My E-commerce App')),
             body: IndexedStack(
               index: _selectedIndex,
               children: [
@@ -97,8 +96,10 @@ class _MyAppState extends State<MyApp> {
                 const MyProfile(),
               ],
             ),
-            bottomNavigationBar:
-                BottomNavbar(index: _selectedIndex, onTap: _onNavTapped),
+            bottomNavigationBar: BottomNavbar(
+              index: _selectedIndex,
+              onTap: _onNavTapped,
+            ),
           ),
         );
       },

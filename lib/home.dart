@@ -55,8 +55,9 @@ class _HomePageState extends State<HomePage> {
                   backgroundImage: file != null
                       ? FileImage(file)
                       : const NetworkImage(
-                          'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                        ) as ImageProvider,
+                              'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                            )
+                            as ImageProvider,
                 );
               },
             ),
@@ -81,7 +82,10 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text(
                       'Hello ${name.isNotEmpty ? name.split(' ').first : 'User'}',
-                      style: const TextStyle(fontSize: 14, color: Colors.black54),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                      ),
                     ),
                     Text(
                       greeting + '!',
@@ -106,8 +110,7 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.black,
                   size: 28,
                 ),
-                onPressed: () {
-                },
+                onPressed: () {},
               ),
               Positioned(
                 right: 11,

@@ -50,7 +50,8 @@ class _DescriptionPageState extends State<DescriptionPage> {
     _listener = () {
       final currentlyFav = favoritesNotifier.value.contains(_item);
       final currentlyInCart = cartNotifier.value.contains(_cartItem);
-      if (mounted && (currentlyFav != isFavorite || currentlyInCart != isInCartItem)) {
+      if (mounted &&
+          (currentlyFav != isFavorite || currentlyInCart != isInCartItem)) {
         setState(() {
           isFavorite = currentlyFav;
           isInCartItem = currentlyInCart;
@@ -167,10 +168,10 @@ class _DescriptionPageState extends State<DescriptionPage> {
                   icon: const Icon(Icons.shopping_cart_outlined),
                   iconSize: 30,
                   tooltip: 'Go to Cart',
-                   onPressed: () {
-                    bottomNavIndex.value = 3; 
+                  onPressed: () {
+                    bottomNavIndex.value = 3;
                     Navigator.of(context).popUntil((route) => route.isFirst);
-                   },
+                  },
                 ),
 
                 const SizedBox(width: 8),

@@ -90,7 +90,7 @@ class CartPage extends StatelessWidget {
                 child: Text(
                   "My Cart",
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Color.fromARGB(255, 254, 30, 30),
                   ),
@@ -103,43 +103,107 @@ class CartPage extends StatelessWidget {
                     final item = list[index];
                     return Card(
                       margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
+                        horizontal: 10,
+                        vertical: 10,
+                      ),
                       child: ListTile(
-                        leading: Checkbox(
-                          value: item.isSelected,
-                          onChanged: (value) {
-                            item.isSelected = value!;
-                            cartNotifier.value = List<CartItem>.from(cartNotifier.value);
-                          },
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Transform.scale(
+                              scale: 0.8,
+                              child: Checkbox(
+                                value: item.isSelected,
+                                onChanged: (value) {
+                                  item.isSelected = value!;
+                                  cartNotifier.value = List<CartItem>.from(
+                                    cartNotifier.value,
+                                  );
+                                },
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: item.imageUrl.startsWith('http')
+                                  ? Image.network(
+                                      item.imageUrl,
+                                      width: 48,
+                                      height: 48,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Icon(Icons.broken_image),
+                                    )
+                                  : Image.asset(
+                                      item.imageUrl,
+                                      width: 48,
+                                      height: 48,
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                          ],
                         ),
-                        title: Text(item.title),
+                        title: Text(
+                          item.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                          ),
+                        ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Rs ${item.price}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.green)),
-                            const SizedBox(height: 4),
                             Row(
                               children: [
+                                Text(
+                                  'Rs ${item.price}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                const SizedBox(width: 0),
                                 IconButton(
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints.tightFor(
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                  iconSize: 16,
+                                  splashRadius: 16,
                                   icon: const Icon(Icons.remove),
                                   onPressed: () {
                                     if (item.quantity > 1) {
                                       item.quantity--;
-                                      cartNotifier.value = List<CartItem>.from(cartNotifier.value);
+                                      cartNotifier.value = List<CartItem>.from(
+                                        cartNotifier.value,
+                                      );
                                     }
                                   },
                                 ),
-                                Text(item.quantity.toString(),
-                                    style: const TextStyle(fontSize: 16)),
+                                SizedBox(
+                                  width: 5,
+                                  child: Center(
+                                    child: Text(
+                                      item.quantity.toString(),
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                ),
                                 IconButton(
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints.tightFor(
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                  iconSize: 16,
+                                  splashRadius: 16,
                                   icon: const Icon(Icons.add),
                                   onPressed: () {
                                     item.quantity++;
-                                    cartNotifier.value = List<CartItem>.from(cartNotifier.value);
-
+                                    cartNotifier.value = List<CartItem>.from(
+                                      cartNotifier.value,
+                                    );
                                   },
                                 ),
                               ],
@@ -147,6 +211,8 @@ class CartPage extends StatelessWidget {
                           ],
                         ),
                         trailing: IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
                           icon: const Icon(Icons.delete),
                           color: Colors.red,
                           onPressed: () => removeCartItem(item),
@@ -169,8 +235,10 @@ class CartPage extends StatelessWidget {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 color: Colors.grey.shade200,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -182,21 +250,23 @@ class CartPage extends StatelessWidget {
                         return Text(
                           'Total: Rs $total',
                           style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         );
                       },
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        // handle checkout action
                         ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Checkout clicked')));
+                          const SnackBar(content: Text('Checkout clicked')),
+                        );
                       },
                       child: const Text('Checkout'),
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           );
         },

@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'dart:io';
 import 'package:ecommerce_practice/controller/theme_controller.dart';
+import 'package:ecommerce_practice/controller/profile_controller.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
@@ -16,16 +17,27 @@ String _email = "john.doe@example.com";
 
 
 class _MyProfileState extends State<MyProfile> {
-  File? _imageFile;
+  // Image file is stored in a shared notifier so other pages (like Home) can
+  // react to changes (e.g. show uploaded picture in app bar).
+  // Local state is not required; we use the global notifier below.
   final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    // initialize shared name notifier with current local name
+    profileNameNotifier.value = _name;
+  }
 
   // pick image from camera or gallery
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
+      final file = File(pickedFile.path);
+      // update shared notifier so other widgets can read the new image
+      profileImageNotifier.value = file;
+      // keep UI in sync if any local widgets depend on setState
+      setState(() {});
     }
     Navigator.pop(context);
   }
@@ -72,14 +84,20 @@ class _MyProfileState extends State<MyProfile> {
               Stack(
                 alignment: Alignment.bottomRight,
                 children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundImage: _imageFile != null
-                        ? FileImage(_imageFile!)
-                        : const NetworkImage(
+                  // Use ValueListenableBuilder so this avatar updates when
+                  // the user picks a new image via the profile editor.
+                  ValueListenableBuilder<File?>(
+                    valueListenable: profileImageNotifier,
+                    builder: (context, file, _) {
+                      return CircleAvatar(
+                        radius: 60,
+                        backgroundImage: file != null
+                            ? FileImage(file)
+                            : const NetworkImage(
                                 "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-                              )
-                              as ImageProvider,
+                              ) as ImageProvider,
+                      );
+                    },
                   ),
                   Positioned(
                     bottom: 4,
@@ -141,6 +159,8 @@ class _MyProfileState extends State<MyProfile> {
                     setState(() {
                       _name = result['name'] ?? _name;
                       _email = result['email'] ?? _email;
+                      // update shared notifier so Home and other pages reflect name
+                      profileNameNotifier.value = _name;
                     });
                   }
                 },

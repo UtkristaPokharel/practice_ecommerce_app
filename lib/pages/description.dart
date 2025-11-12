@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/pages/favourites.dart';
+import 'package:ecommerce_practice/pages/cart.dart';
 
 class DescriptionPage extends StatefulWidget {
   final String title;
@@ -20,9 +21,10 @@ class DescriptionPage extends StatefulWidget {
 }
 
 class _DescriptionPageState extends State<DescriptionPage> {
-  
   bool isFavorite = false;
   late final FavoriteItem _item;
+  late final CartItem _cartItem;
+  bool isInCartItem = false;
   VoidCallback? _listener;
 
   @override
@@ -35,22 +37,35 @@ class _DescriptionPageState extends State<DescriptionPage> {
       description: widget.description,
     );
 
-    isFavorite = isFavorite = favoritesNotifier.value.contains(_item);
+    _cartItem = CartItem(
+      title: widget.title,
+      imageUrl: widget.imageUrl,
+      price: widget.price,
+      description: widget.description,
+    );
+    isFavorite = favoritesNotifier.value.contains(_item);
+    isInCartItem = cartNotifier.value.contains(_cartItem);
 
     _listener = () {
       final currentlyFav = favoritesNotifier.value.contains(_item);
-      if (mounted && currentlyFav != isFavorite) {
+      final currentlyInCart = cartNotifier.value.contains(_cartItem);
+      if (mounted && (currentlyFav != isFavorite || currentlyInCart != isInCartItem)) {
         setState(() {
           isFavorite = currentlyFav;
+          isInCartItem = currentlyInCart;
         });
       }
     };
     favoritesNotifier.addListener(_listener!);
+    cartNotifier.addListener(_listener!);
   }
 
   @override
   void dispose() {
-    if (_listener != null) favoritesNotifier.removeListener(_listener!);
+    if (_listener != null) {
+      favoritesNotifier.removeListener(_listener!);
+      cartNotifier.removeListener(_listener!);
+    }
     super.dispose();
   }
 
@@ -85,9 +100,10 @@ class _DescriptionPageState extends State<DescriptionPage> {
                       child: Text(
                         'Rs ${widget.price}',
                         style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -108,22 +124,40 @@ class _DescriptionPageState extends State<DescriptionPage> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      print('"${widget.title}" added to cart!');
+                      final wasInCart = isInCartItem;
+                      // toggle the item in the global cart notifier
+                      toggleCartItem(_cartItem);
+
+                      // show a snackbar reflecting the action
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Added ${widget.title} to cart!'),
+                          content: Text(
+                            wasInCart
+                                ? 'Removed ${widget.title} from cart!'
+                                : 'Added ${widget.title} to cart!',
+                          ),
                           duration: const Duration(seconds: 2),
                         ),
                       );
+
+                      if (mounted) {
+                        setState(() {
+                          isInCartItem = !wasInCart;
+                        });
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
                       foregroundColor: Colors.white,
-                      minimumSize: const Size(0, 50), 
+                      minimumSize: const Size(0, 50),
                       textStyle: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    child: const Text('Add to Cart'),
+                    child: Text(
+                      isInCartItem ? 'Remove from Cart' : 'Add to Cart',
+                    ),
                   ),
                 ),
 
@@ -134,7 +168,10 @@ class _DescriptionPageState extends State<DescriptionPage> {
                   iconSize: 30,
                   tooltip: 'Go to Cart',
                   onPressed: () {
-                    print('Go to Cart tapped!');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const CartPage()),
+                    );
                   },
                 ),
 
@@ -152,7 +189,7 @@ class _DescriptionPageState extends State<DescriptionPage> {
                   },
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

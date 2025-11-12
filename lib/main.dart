@@ -1,3 +1,4 @@
+import 'package:ecommerce_practice/pages/cart.dart';
 import 'package:ecommerce_practice/pages/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/grid.dart';
@@ -95,7 +96,7 @@ class _MyAppState extends State<MyApp> {
 
                 const MyCategorie(),
                 const FavouritesPage(),
-                const Center(child: Text('Cart')),
+                const CartPage(),
                 const MyProfile(),
               ],
             ),

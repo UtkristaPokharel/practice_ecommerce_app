@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/pages/favourites.dart';
 import 'package:ecommerce_practice/pages/cart.dart';
+import 'package:ecommerce_practice/controller/navigation_controller.dart';
 
 class DescriptionPage extends StatefulWidget {
   final String title;
@@ -128,7 +129,6 @@ class _DescriptionPageState extends State<DescriptionPage> {
                       // toggle the item in the global cart notifier
                       toggleCartItem(_cartItem);
 
-                      // show a snackbar reflecting the action
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
@@ -167,12 +167,10 @@ class _DescriptionPageState extends State<DescriptionPage> {
                   icon: const Icon(Icons.shopping_cart_outlined),
                   iconSize: 30,
                   tooltip: 'Go to Cart',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const CartPage()),
-                    );
-                  },
+                   onPressed: () {
+                    bottomNavIndex.value = 3; 
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                   },
                 ),
 
                 const SizedBox(width: 8),

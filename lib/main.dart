@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/grid.dart';
 import 'package:ecommerce_practice/searchbar.dart';
 import 'package:ecommerce_practice/bottom_navbar.dart';
+import 'package:ecommerce_practice/controller/navigation_controller.dart';
 import 'package:ecommerce_practice/pages/profilepage.dart';
 import 'package:ecommerce_practice/controller/theme_controller.dart';
 import 'package:ecommerce_practice/pages/favourites.dart';
@@ -33,8 +34,18 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _onNavTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
+    bottomNavIndex.value = index;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    bottomNavIndex.addListener(() {
+      if (mounted) {
+        setState(() {
+          _selectedIndex = bottomNavIndex.value;
+        });
+      }
     });
   }
 

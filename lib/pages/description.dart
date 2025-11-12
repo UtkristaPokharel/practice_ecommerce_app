@@ -136,7 +136,7 @@ class _DescriptionPageState extends State<DescriptionPage> {
                                 ? 'Removed ${widget.title} from cart!'
                                 : 'Added ${widget.title} to cart!',
                           ),
-                          duration: const Duration(seconds: 1),
+                          duration: const Duration(milliseconds: 300),
                         ),
                       );
 

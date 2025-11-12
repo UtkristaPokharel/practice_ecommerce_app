@@ -15,7 +15,6 @@ class MyProfile extends StatefulWidget {
 String _name = "John Doe";
 String _email = "john.doe@example.com";
 
-
 class _MyProfileState extends State<MyProfile> {
   // Image file is stored in a shared notifier so other pages (like Home) can
   // react to changes (e.g. show uploaded picture in app bar).
@@ -94,8 +93,9 @@ class _MyProfileState extends State<MyProfile> {
                         backgroundImage: file != null
                             ? FileImage(file)
                             : const NetworkImage(
-                                "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-                              ) as ImageProvider,
+                                    "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+                                  )
+                                  as ImageProvider,
                       );
                     },
                   ),
@@ -188,7 +188,9 @@ class _MyProfileState extends State<MyProfile> {
                   return Card(
                     elevation: 1,
                     color: theme.colorScheme.surface,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: SwitchListTile(
                       value: isDark,
                       onChanged: (val) => isDarkNotifier.value = val,
@@ -201,8 +203,10 @@ class _MyProfileState extends State<MyProfile> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      secondary: Icon(isDark ? Icons.dark_mode : Icons.light_mode,
-                          color: theme.colorScheme.primary),
+                      secondary: Icon(
+                        isDark ? Icons.dark_mode : Icons.light_mode,
+                        color: theme.colorScheme.primary,
+                      ),
                     ),
                   );
                 },

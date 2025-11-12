@@ -5,4 +5,6 @@ import 'package:flutter/foundation.dart';
 final ValueNotifier<File?> profileImageNotifier = ValueNotifier<File?>(null);
 
 // notifier for profile name so Home can display the updated name
-final ValueNotifier<String> profileNameNotifier = ValueNotifier<String>('John Doe');
+final ValueNotifier<String> profileNameNotifier = ValueNotifier<String>(
+  'John Doe',
+);

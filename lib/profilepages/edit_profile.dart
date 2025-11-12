@@ -56,8 +56,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   if (value == null || value.isEmpty) {
                     return "Enter your email";
                   }
-                  final emailRegex =
-                      RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                  final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
                   if (!emailRegex.hasMatch(value)) {
                     return "Enter a valid email";
                   }
@@ -75,7 +74,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     backgroundColor: theme.colorScheme.primary,
                   ),
                   onPressed: () {
@@ -84,10 +84,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Profile updated!")),
                       );
-                      Navigator.pop(context,{
-                        'name': _name,
-                        'email': _email,
-                      });
+                      Navigator.pop(context, {'name': _name, 'email': _email});
                     }
                   },
                   child: const Text(
@@ -95,7 +92,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

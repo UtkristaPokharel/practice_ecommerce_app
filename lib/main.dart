@@ -1,14 +1,14 @@
-import 'package:ecommerce_practice/categories.dart';
+import 'package:ecommerce_practice/pages/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/grid.dart';
 import 'package:ecommerce_practice/searchbar.dart';
 import 'package:ecommerce_practice/bottom_navbar.dart';
-import 'package:ecommerce_practice/profilepage.dart';
-import 'package:ecommerce_practice/theme_controller.dart';
-import 'package:ecommerce_practice/favourites.dart';
-import 'package:ecommerce_practice/edit_profile.dart';
-import 'package:ecommerce_practice/shipping_address.dart';
-import 'package:ecommerce_practice/my_orders.dart';
+import 'package:ecommerce_practice/pages/profilepage.dart';
+import 'package:ecommerce_practice/controller/theme_controller.dart';
+import 'package:ecommerce_practice/pages/favourites.dart';
+import 'package:ecommerce_practice/profilepages/edit_profile.dart';
+import 'package:ecommerce_practice/profilepages/shipping_address.dart';
+import 'package:ecommerce_practice/pages/my_orders.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ecommerce_practice/description.dart';
+import 'package:ecommerce_practice/pages/description.dart';
 
 /// Favorite model and in-memory store (moved here so there's a single file)
 class FavoriteItem {

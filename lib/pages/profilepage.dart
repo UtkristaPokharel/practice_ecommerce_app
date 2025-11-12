@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'dart:io';
-import 'package:ecommerce_practice/theme_controller.dart';
+import 'package:ecommerce_practice/controller/theme_controller.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});

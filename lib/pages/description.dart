@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ecommerce_practice/favourites.dart';
+import 'package:ecommerce_practice/pages/favourites.dart';
 
 class DescriptionPage extends StatefulWidget {
   final String title;

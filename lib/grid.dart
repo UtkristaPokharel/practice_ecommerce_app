@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:ecommerce_practice/description.dart';
+import 'package:ecommerce_practice/pages/description.dart';
 
 class Mygrid extends StatefulWidget {
   final String searchQuery;

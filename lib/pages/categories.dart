@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'grid.dart';
-import 'searchbar.dart';
+import '../grid.dart';
+import '../searchbar.dart';
 
 class MyCategorie extends StatefulWidget {
   final String searchQuery;

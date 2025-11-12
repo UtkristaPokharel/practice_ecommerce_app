@@ -63,6 +63,7 @@ class FavouritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+                   appBar: AppBar(title: const Text('My Favourites')),
       body: ValueListenableBuilder<List<FavoriteItem>>(
         valueListenable: favoritesNotifier,
         builder: (context, list, _) {
@@ -75,14 +76,6 @@ class FavouritesPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "My Favourites",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 254, 30, 30),
-                  ),
-                ),
                 const SizedBox(height: 10),
                 Expanded(
                   child: ListView.builder(

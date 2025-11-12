@@ -75,54 +75,57 @@ class _MyCategorieState extends State<MyCategorie> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: <Widget>[
-          // Search bar
-          MySearchBar(onSearchChanged: _handleSearchChanged),
-          const SizedBox(height: 16.0),
-
-          // Price filter
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Filter by Price',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              RangeSlider(
-                values: RangeValues(_priceRangeStart, _priceRangeEnd),
-                min: _minPrice,
-                max: _maxPrice,
-                divisions: 20,
-                labels: RangeLabels(
-                  'Rs ${_priceRangeStart.toStringAsFixed(0)}',
-                  'Rs ${_priceRangeEnd.toStringAsFixed(0)}',
+    return Scaffold(
+      appBar: AppBar(title: const Text('Categories')),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: <Widget>[
+            // Search bar
+            MySearchBar(onSearchChanged: _handleSearchChanged),
+            const SizedBox(height: 16.0),
+      
+            // Price filter
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Filter by Price',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                onChanged: _handlePriceRangeChanged,
-              ),
-            ],
-          ),
-          const SizedBox(height: 16.0),
-
-          // Category selector
-          _categorySelector(),
-          const SizedBox(height: 16.0),
-
-          // Product grid
-          Mygrid(
-            searchQuery: searchQuery,
-            minPrice: _priceRangeStart,
-            maxPrice: _priceRangeEnd,
-            category: selectedCategory,
-            onCategoriesFetched: (fetchedCategories) {
-              setState(() {
-                categories = fetchedCategories;
-              });
-            },
-          ),
-        ],
+                RangeSlider(
+                  values: RangeValues(_priceRangeStart, _priceRangeEnd),
+                  min: _minPrice,
+                  max: _maxPrice,
+                  divisions: 20,
+                  labels: RangeLabels(
+                    'Rs ${_priceRangeStart.toStringAsFixed(0)}',
+                    'Rs ${_priceRangeEnd.toStringAsFixed(0)}',
+                  ),
+                  onChanged: _handlePriceRangeChanged,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16.0),
+      
+            // Category selector
+            _categorySelector(),
+            const SizedBox(height: 16.0),
+      
+            // Product grid
+            Mygrid(
+              searchQuery: searchQuery,
+              minPrice: _priceRangeStart,
+              maxPrice: _priceRangeEnd,
+              category: selectedCategory,
+              onCategoriesFetched: (fetchedCategories) {
+                setState(() {
+                  categories = fetchedCategories;
+                });
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

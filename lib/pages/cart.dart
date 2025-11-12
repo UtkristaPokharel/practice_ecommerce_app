@@ -4,14 +4,18 @@ import 'package:ecommerce_practice/pages/description.dart';
 class CartItem {
   final String title;
   final String imageUrl;
-  final String price;
+  final double price;
   final String description;
+  int quantity;
+  bool isSelected;
 
   CartItem({
     required this.title,
     required this.imageUrl,
     required this.price,
     this.description = '',
+    this.quantity = 1,
+    this.isSelected = true,
   });
 
   @override
@@ -59,6 +63,16 @@ void toggleCartItem(CartItem item) {
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
 
+  double calculateTotal(List<CartItem> items) {
+    double total = 0;
+    for (var item in items) {
+      if (item.isSelected) {
+        total += item.price * item.quantity;
+      }
+    }
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,37 +83,69 @@ class CartPage extends StatelessWidget {
             return const Center(child: Text('No items added to cart yet'));
           }
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "My Favourites",
+          return Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  "My Cart",
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Color.fromARGB(255, 254, 30, 30),
                   ),
                 ),
-                const SizedBox(height: 10),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      final item = list[index];
-                      return ListTile(
-                        leading: Image.network(
-                          item.imageUrl,
-                          width: 56,
-                          height: 56,
-                          fit: BoxFit.cover,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    final item = list[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: ListTile(
+                        leading: Checkbox(
+                          value: item.isSelected,
+                          onChanged: (value) {
+                            item.isSelected = value!;
+                            cartNotifier.value = List<CartItem>.from(cartNotifier.value);
+                          },
                         ),
                         title: Text(item.title),
-                        subtitle: Text('Rs ${item.price}',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green)),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Rs ${item.price}',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green)),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.remove),
+                                  onPressed: () {
+                                    if (item.quantity > 1) {
+                                      item.quantity--;
+                                      cartNotifier.value = List<CartItem>.from(cartNotifier.value);
+                                    }
+                                  },
+                                ),
+                                Text(item.quantity.toString(),
+                                    style: const TextStyle(fontSize: 16)),
+                                IconButton(
+                                  icon: const Icon(Icons.add),
+                                  onPressed: () {
+                                    item.quantity++;
+                                    cartNotifier.value = List<CartItem>.from(cartNotifier.value);
+
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete),
                           color: Colors.red,
@@ -111,18 +157,47 @@ class CartPage extends StatelessWidget {
                               builder: (_) => DescriptionPage(
                                 title: item.title,
                                 imageUrl: item.imageUrl,
-                                price: item.price,
+                                price: item.price.toString(),
                                 description: item.description,
                               ),
                             ),
                           );
                         },
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                color: Colors.grey.shade200,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ValueListenableBuilder<List<CartItem>>(
+                      valueListenable: cartNotifier,
+                      builder: (context, list, _) {
+                        double total = calculateTotal(list);
+                        return Text(
+                          'Total: Rs $total',
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        );
+                      },
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // handle checkout action
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Checkout clicked')));
+                      },
+                      child: const Text('Checkout'),
+                    )
+                  ],
+                ),
+              )
+            ],
           );
         },
       ),

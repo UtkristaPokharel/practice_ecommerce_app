@@ -41,7 +41,7 @@ class _DescriptionPageState extends State<DescriptionPage> {
     _cartItem = CartItem(
       title: widget.title,
       imageUrl: widget.imageUrl,
-      price: widget.price,
+      price: double.parse(widget.price),
       description: widget.description,
     );
     isFavorite = favoritesNotifier.value.contains(_item);
@@ -136,7 +136,7 @@ class _DescriptionPageState extends State<DescriptionPage> {
                                 ? 'Removed ${widget.title} from cart!'
                                 : 'Added ${widget.title} to cart!',
                           ),
-                          duration: const Duration(seconds: 2),
+                          duration: const Duration(seconds: 1),
                         ),
                       );
 

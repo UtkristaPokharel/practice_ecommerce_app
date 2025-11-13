@@ -80,7 +80,7 @@ class LogoutDialog {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 12), // 👈 Bigger touch area
+                    horizontal: 20, vertical: 12),
               ),
               child: const Text(
                 'Logout',

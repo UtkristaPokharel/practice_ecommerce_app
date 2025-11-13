@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'controller/theme_controller.dart';
+import 'otp_verification.dart';
 
 class Mysignup extends StatefulWidget {
   const Mysignup({super.key});
@@ -70,16 +71,25 @@ class _MysignupState extends State<Mysignup> {
         final isSuccess = data['status'] == true || data['success'] == true;
 
         if (isSuccess) {
-          final userData = data['data'] ?? data['user'];
-          final userName = userData?['first_name'] ?? userData?['name'] ?? '';
-
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Signup Successful! Welcome $userName'),
+              content: Text('Registration Successful! Please verify OTP sent to $mobile'),
               backgroundColor: Colors.green,
+              duration: const Duration(seconds: 3),
             ),
           );
-          Navigator.pushReplacementNamed(context, '/login');
+          
+          // Navigate to OTP verification page
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OtpVerification(
+                mobileNumber: mobile,
+                firstName: firstName,
+                lastName: lastName,
+              ),
+            ),
+          );
         } else {
           // API returned 200 but status/success is false
           ScaffoldMessenger.of(context).showSnackBar(

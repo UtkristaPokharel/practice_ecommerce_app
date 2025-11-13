@@ -21,10 +21,10 @@ class _MyProfileState extends State<MyProfile> {
   @override
   void initState() {
     super.initState();
-
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-  profileNameNotifier.value = _fullName;
-});
+    // Ensure the profile name is updated when this page loads
+    if (_fullName.isNotEmpty) {
+      profileNameNotifier.value = _fullName;
+    }
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -124,12 +124,17 @@ class _MyProfileState extends State<MyProfile> {
                 ],
               ),
               const SizedBox(height: 12),
-              Text(
-                _fullName,
-                style: textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : Colors.black,
-                ),
+              ValueListenableBuilder<String>(
+                valueListenable: profileNameNotifier,
+                builder: (context, name, _) {
+                  return Text(
+                    name.isNotEmpty ? name : _fullName,
+                    style: textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : Colors.black,
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 4),
               Text(

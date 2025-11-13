@@ -11,31 +11,26 @@ class Mysignup extends StatefulWidget {
 
 class _MysignupState extends State<Mysignup> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailcontroller = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _reenterPasswordController =
-      TextEditingController();
 
   bool _isLoading = false;
 
   Future<void> _signupUser() async {
-    final username = _usernameController.text.trim();
-    final email = _emailcontroller.text.trim();
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();
+    final mobile = _mobileController.text.trim();
     final password = _passwordController.text.trim();
-    final confirmPassword = _reenterPasswordController.text.trim();
 
-    if (username.isEmpty || email.isEmpty || password.isEmpty) {
+    if (firstName.isEmpty ||
+        lastName.isEmpty ||
+        mobile.isEmpty ||
+        password.isEmpty) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
-      return;
-    }
-
-    if (password != confirmPassword) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Passwords do not match')));
       return;
     }
 
@@ -52,28 +47,76 @@ class _MysignupState extends State<Mysignup> {
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'username': username,
-          'email': email,
+          'first_name': firstName,
+          'last_name': lastName,
+          'mobile_no': mobile,
           'password': password,
           'device_token':
               'eEcu_X4XMkspr7fsv6IlrL:APA91bFcUP60TtS7Nf-WMBhpxhFbXLuzYvVmo6e7Iczct6oNH3XUFrM1k0J2sr5pkQ-RGbF7Sssf7JWY5CZnEiApFnq5lvj4MajFpKZ7aqr32Jzxn1IR6W_zoJO7-vl-163q3xnEQ9QS',
         }),
       );
 
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
       final data = jsonDecode(response.body);
-      if ((response.statusCode == 200 || response.statusCode == 203) &&
-          data['status'] == true) {
+
+      // Check for successful response with more flexible conditions
+      if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 203) {
+        // Check if status is true or success is true
+        final isSuccess = data['status'] == true || data['success'] == true;
+        
+        if (isSuccess) {
+          final userData = data['data'] ?? data['user'];
+          final userName = userData?['first_name'] ?? userData?['name'] ?? '';
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Signup Successful! Welcome $userName'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.pushReplacementNamed(context, '/login');
+        } else {
+          // API returned 200 but status/success is false
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(data['message'] ?? 'Signup failed'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+      } else if (response.statusCode == 409) {
+        // 409 Conflict - User already exists
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Signup Successful! Welcome ${data["user"]["name"] ?? ""}',
+              data['message'] ?? 
+              'This mobile number is already registered. Please use a different number or login.',
             ),
+            backgroundColor: Colors.orange,
+            duration: const Duration(seconds: 4),
           ),
         );
-        Navigator.pushReplacementNamed(context, '/login');
       } else {
+        // Other non-success status codes
+        String errorMessage;
+        switch (response.statusCode) {
+          case 400:
+            errorMessage = 'Invalid input. Please check your details.';
+            break;
+          case 500:
+            errorMessage = 'Server error. Please try again later.';
+            break;
+          default:
+            errorMessage = data['message'] ?? 'Signup failed. Please try again.';
+        }
+        
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['message'] ?? 'Signup failed')),
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } catch (e) {
@@ -87,10 +130,10 @@ class _MysignupState extends State<Mysignup> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
-    _emailcontroller.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _mobileController.dispose();
     _passwordController.dispose();
-    _reenterPasswordController.dispose();
     super.dispose();
   }
 
@@ -118,7 +161,7 @@ class _MysignupState extends State<Mysignup> {
               child: Center(
                 child: Column(
                   children: [
-                    const SizedBox(height: 300),
+                    const SizedBox(height: 250),
                     Form(
                       key: _formKey,
                       child: Container(
@@ -126,11 +169,11 @@ class _MysignupState extends State<Mysignup> {
                         child: Column(
                           children: [
                             TextFormField(
-                              controller: _usernameController,
+                              controller: _firstNameController,
                               decoration: InputDecoration(
                                 fillColor: Colors.grey.shade200,
                                 filled: true,
-                                hintText: 'Username',
+                                hintText: 'First Name',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -138,11 +181,24 @@ class _MysignupState extends State<Mysignup> {
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
-                              controller: _emailcontroller,
+                              controller: _lastNameController,
                               decoration: InputDecoration(
                                 fillColor: Colors.grey.shade200,
                                 filled: true,
-                                hintText: 'Email',
+                                hintText: 'Last Name',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              controller: _mobileController,
+                              keyboardType: TextInputType.phone,
+                              decoration: InputDecoration(
+                                fillColor: Colors.grey.shade200,
+                                filled: true,
+                                hintText: 'Mobile Number',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -156,19 +212,6 @@ class _MysignupState extends State<Mysignup> {
                                 fillColor: Colors.grey.shade100,
                                 filled: true,
                                 hintText: 'Password',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _reenterPasswordController,
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                fillColor: Colors.grey.shade100,
-                                filled: true,
-                                hintText: 'Re-enter Password',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),

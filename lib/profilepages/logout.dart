@@ -19,7 +19,7 @@ class LogoutDialog {
           ),
           title: Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.warning_amber_rounded,
                 color: Colors.orange,
                 size: 28,
@@ -37,9 +37,14 @@ class LogoutDialog {
           content: Text(
             'Are you sure you want to logout?',
             style: TextStyle(
-              color: isDark ? Colors.grey[300] : Colors.grey[700],
+              color: isDark
+                  ? const Color.fromRGBO(224, 224, 224, 1)
+                  : Colors.grey[700],
             ),
           ),
+          actionsAlignment: MainAxisAlignment.spaceBetween, 
+          actionsPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 5), 
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -53,19 +58,13 @@ class LogoutDialog {
             ),
             ElevatedButton(
               onPressed: () {
-                // Close the dialog
                 Navigator.of(context).pop();
-
-                // Execute the logout callback
                 onLogoutConfirmed();
-
-                // Navigate to login and remove all previous routes
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   '/login',
                   (Route<dynamic> route) => false,
                 );
 
-                // Show a success message
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Logged out successfully'),
@@ -80,6 +79,8 @@ class LogoutDialog {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20, vertical: 12), // 👈 Bigger touch area
               ),
               child: const Text(
                 'Logout',
@@ -92,7 +93,6 @@ class LogoutDialog {
     );
   }
 
-  /// Resets user profile data to default values
   static void clearUserData() {
     profileImageNotifier.value = null;
     profileNameNotifier.value = "John Doe";

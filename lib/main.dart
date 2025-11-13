@@ -1,6 +1,7 @@
-// lib/main.dart
 import 'package:ecommerce_practice/pages/cart.dart';
 import 'package:ecommerce_practice/pages/categories.dart';
+import 'package:ecommerce_practice/login.dart';
+import 'package:ecommerce_practice/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/home.dart';
 import 'package:ecommerce_practice/pages/favourites.dart';
@@ -24,31 +25,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String searchQuery = '';
-  int _selectedIndex = 0;
-
-  void _handleSearchChanged(String newQuery) {
-    setState(() {
-      searchQuery = newQuery;
-    });
-  }
-
-  void _onNavTapped(int index) {
-    bottomNavIndex.value = index;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    bottomNavIndex.addListener(() {
-      if (mounted) {
-        setState(() {
-          _selectedIndex = bottomNavIndex.value;
-        });
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
@@ -78,31 +54,73 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           theme: themeData,
           routes: {
+            '/login': (context) => const MyLogin(),
+            '/signup': (context) => const Mysignup(),
+            '/home': (context) => const HomeWrapper(),
             '/edit-profile': (context) => const EditProfilePage(),
             '/shipping-address': (context) => const ShippingAddressPage(),
             '/my-orders': (context) => const MyOrdersPage(),
           },
-          home: Scaffold(
-            body: IndexedStack(
-              index: _selectedIndex,
-              children: [
-                HomePage(
-                  initialSearchQuery: searchQuery,
-                  onSearchChanged: _handleSearchChanged,
-                ),
-                const MyCategorie(),
-                const FavouritesPage(),
-                const CartPage(),
-                const MyProfile(),
-              ],
-            ),
-            bottomNavigationBar: BottomNavbar(
-              index: _selectedIndex,
-              onTap: _onNavTapped,
-            ),
-          ),
+          home: const MyLogin(),
         );
       },
+    );
+  }
+}
+
+class HomeWrapper extends StatefulWidget {
+  const HomeWrapper({super.key});
+
+  @override
+  State<HomeWrapper> createState() => _HomeWrapperState();
+}
+
+class _HomeWrapperState extends State<HomeWrapper> {
+  String searchQuery = '';
+  int _selectedIndex = 0;
+
+  void _handleSearchChanged(String newQuery) {
+    setState(() {
+      searchQuery = newQuery;
+    });
+  }
+
+  void _onNavTapped(int index) {
+    bottomNavIndex.value = index;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    bottomNavIndex.addListener(() {
+      if (mounted) {
+        setState(() {
+          _selectedIndex = bottomNavIndex.value;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          HomePage(
+            initialSearchQuery: searchQuery,
+            onSearchChanged: _handleSearchChanged,
+          ),
+          const MyCategorie(),
+          const FavouritesPage(),
+          const CartPage(),
+          const MyProfile(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavbar(
+        index: _selectedIndex,
+        onTap: _onNavTapped,
+      ),
     );
   }
 }

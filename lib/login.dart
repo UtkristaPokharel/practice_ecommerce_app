@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MyLogin extends StatefulWidget {
   const MyLogin({super.key});
@@ -9,9 +11,73 @@ class MyLogin extends StatefulWidget {
 
 class _MyLoginState extends State<MyLogin> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _emailcontroller = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  // 🧠 LOGIN FUNCTION
+  Future<void> _loginUser() async {
+    final username = _emailcontroller.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter all fields')),
+      );
+      return;
+    }
+
+    const String url =
+        'https://ecommerce.atithyahms.com/api/v2/ecommerce/customer/login';
+
+    setState(() => _isLoading = true);
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'username': username,
+          'password': password,
+          'device_token':
+              "eyurwex5Rqy5Qvu8fz2OtV:APA91bF-C3fcf6sDkqccb2OqVt-5ADIk1rpPpAA81zJ4wQLjrmoglrvklmcSZPi2EkxvC7PjMtDPmDBaWpczQs2p4xDRfeo9aGov8_UiJxE5m70am8Fc9BEriJ8Z9_kwzpEgwe0ZnWBK",
+        }),
+      );
+
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      final data = jsonDecode(response.body);
+
+      if ((response.statusCode == 200 || response.statusCode == 203) && 
+          (data['status'] == true || data['success'] == true)) {
+        final userData = data['data'] ?? data['user'];
+        final userName = userData?['first_name'] ?? userData?['name'] ?? 'User';
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Login Successful! Welcome $userName'),
+          ),
+        );
+
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(data['message'] ?? 'Login failed')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   void dispose() {
     _emailcontroller.dispose();
@@ -22,7 +88,7 @@ class _MyLoginState extends State<MyLogin> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/login.png'),
           fit: BoxFit.cover,
@@ -33,8 +99,8 @@ class _MyLoginState extends State<MyLogin> {
         body: Stack(
           children: [
             Container(
-              padding: EdgeInsets.only(left: 35, top: 130),
-              child: Text(
+              padding: const EdgeInsets.only(left: 35, top: 130),
+              child: const Text(
                 'Welcome\nBack',
                 style: TextStyle(color: Colors.white, fontSize: 33),
               ),
@@ -43,11 +109,11 @@ class _MyLoginState extends State<MyLogin> {
               child: Center(
                 child: Column(
                   children: [
-                    SizedBox(height: 300),
+                    const SizedBox(height: 300),
                     Form(
                       key: _formKey,
                       child: Container(
-                        margin: EdgeInsets.only(left: 35, right: 35),
+                        margin: const EdgeInsets.symmetric(horizontal: 35),
                         child: Column(
                           children: [
                             TextFormField(
@@ -55,13 +121,13 @@ class _MyLoginState extends State<MyLogin> {
                               decoration: InputDecoration(
                                 fillColor: Colors.grey.shade200,
                                 filled: true,
-                                hintText: 'Email',
+                                hintText: 'Username or Email',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                             ),
-                            SizedBox(height: 30),
+                            const SizedBox(height: 30),
                             TextFormField(
                               controller: _passwordController,
                               obscureText: true,
@@ -74,11 +140,11 @@ class _MyLoginState extends State<MyLogin> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 40),
+                            const SizedBox(height: 40),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
+                                const Text(
                                   'Sign In',
                                   style: TextStyle(
                                     color: Colors.black,
@@ -88,73 +154,29 @@ class _MyLoginState extends State<MyLogin> {
                                 ),
                                 CircleAvatar(
                                   radius: 30,
-                                  backgroundColor: Color(0xff4c505b),
-                                  child: IconButton(
-                                    color: Colors.white,
-                                    onPressed: () {
-                                      final email = _emailcontroller.text
-                                          .trim();
-                                      final pass = _passwordController.text
-                                          .trim();
-
-                                      String? message;
-                                      if (email.isEmpty) {
-                                        message = 'Please enter your email';
-                                      } else if (!RegExp(
-                                        r'^[^@]+@[^@]+\.[^@]+',
-                                      ).hasMatch(email)) {
-                                        message =
-                                            'Please enter a valid email address';
-                                      } else if (pass.isEmpty) {
-                                        message = 'Please enter your password';
-                                      } else if (pass.length < 6) {
-                                        message =
-                                            'Password must be at least 6 characters long';
-                                      }
-
-                                      if (message != null) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(content: Text(message)),
-                                        );
-                                        return;
-                                      }
-
-                                      Navigator.pushNamed(context, 'home');
-                                    },
-                                    icon: Icon(Icons.arrow_forward),
-                                  ),
+                                  backgroundColor: const Color(0xff4c505b),
+                                  child: _isLoading
+                                      ? const CircularProgressIndicator(
+                                          color: Colors.white,
+                                        )
+                                      : IconButton(
+                                          color: Colors.white,
+                                          onPressed: _loginUser,
+                                          icon:
+                                              const Icon(Icons.arrow_forward),
+                                        ),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 20),
-                              SizedBox(
-                                width: double.infinity,
-                                child: OutlinedButton.icon(
-                                  icon: Image.asset(
-                                    'assets/google_logo.png',
-                                    width: 20,
-                                    height: 45,
-                                    errorBuilder: (c, e, s) => Icon(Icons.login, size: 20),
-                                  ),
-                                  label: Text('Sign in with Google'),
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Google Sign-In in progress')),
-                                    );
-                                  },
-                                ),
-                              ),
-                            SizedBox(height: 40),
+                            const SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.pushNamed(context, 'signup');
+                                    Navigator.pushNamed(context, '/signup');
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     'Sign Up',
                                     style: TextStyle(
                                       decoration: TextDecoration.underline,
@@ -164,8 +186,14 @@ class _MyLoginState extends State<MyLogin> {
                                   ),
                                 ),
                                 TextButton(
-                                  onPressed: () {},
-                                  child: Text(
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Feature coming soon'),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
                                     'Forgot Password',
                                     style: TextStyle(
                                       decoration: TextDecoration.underline,

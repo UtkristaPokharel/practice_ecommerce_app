@@ -32,5 +32,5 @@ class ProfileController {
   static String get firstName => userData?['first_name'] ?? '';
   static String get lastName => userData?['last_name'] ?? '';
   static String get fullName => '${firstName} ${lastName}';
-  static String get phone => userData?['mobile_no'] ?? '';
+  static String get phone => userData?['mobile_no'] ?? userData?['phone'] ?? userData?['mobile'] ?? userData?['phone_number'] ?? '';
 }

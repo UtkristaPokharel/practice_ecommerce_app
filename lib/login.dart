@@ -55,9 +55,12 @@ class _MyLoginState extends State<MyLogin> {
         final userData = data['data'] ?? data['user'];
         final userName = userData?['first_name'] ?? userData?['name'] ?? 'User';
         
-        // 🔥 Store user data in ProfileController
         if (userData != null) {
-          ProfileController.setUserData(userData);
+          final Map<String, dynamic> completeUserData = Map.from(userData);
+          if (RegExp(r'^\d+$').hasMatch(username)) {
+            completeUserData['mobile_no'] = username;
+          }
+          ProfileController.setUserData(completeUserData);
         }
         
         ScaffoldMessenger.of(context).showSnackBar(

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'dart:io';
-import 'package:ecommerce_practice/controller/theme_controller.dart';
-import 'package:ecommerce_practice/controller/profile_controller.dart';
-import 'package:ecommerce_practice/profilepages/logout.dart';
+import '../controller/theme_controller.dart';
+import '../controller/profile_controller.dart';
+import '../profilepages/logout.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
@@ -13,30 +12,25 @@ class MyProfile extends StatefulWidget {
   State<MyProfile> createState() => _MyProfileState();
 }
 
-String _name = "John Doe";
-String _email = "john.doe@example.com";
-
 class _MyProfileState extends State<MyProfile> {
-  // Image file is stored in a shared notifier so other pages (like Home) can
-  // react to changes (e.g. show uploaded picture in app bar).
-  // Local state is not required; we use the global notifier below.
   final ImagePicker _picker = ImagePicker();
+
+  String get _fullName => ProfileController.fullName;
+  String get _phoneNumber => ProfileController.phone;
 
   @override
   void initState() {
     super.initState();
-    // initialize shared name notifier with current local name
-    profileNameNotifier.value = _name;
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+  profileNameNotifier.value = _fullName;
+});
   }
 
-  // pick image from camera or gallery
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
-      final file = File(pickedFile.path);
-      // update shared notifier so other widgets can read the new image
-      profileImageNotifier.value = file;
-      // keep UI in sync if any local widgets depend on setState
+      profileImageNotifier.value = File(pickedFile.path);
       setState(() {});
     }
     Navigator.pop(context);
@@ -72,14 +66,8 @@ class _MyProfileState extends State<MyProfile> {
     LogoutDialog.show(
       context,
       onLogoutConfirmed: () {
-        // Clear user data in this widget's state
-        setState(() {
-          _name = "John Doe";
-          _email = "john.doe@example.com";
-        });
-        
-        // Clear global profile data
-        LogoutDialog.clearUserData();
+        ProfileController.clearUserData();
+        setState(() {});
       },
     );
   }
@@ -100,8 +88,6 @@ class _MyProfileState extends State<MyProfile> {
               Stack(
                 alignment: Alignment.bottomRight,
                 children: [
-                  // Use ValueListenableBuilder so this avatar updates when
-                  // the user picks a new image via the profile editor.
                   ValueListenableBuilder<File?>(
                     valueListenable: profileImageNotifier,
                     builder: (context, file, _) {
@@ -111,8 +97,7 @@ class _MyProfileState extends State<MyProfile> {
                             ? FileImage(file)
                             : const NetworkImage(
                                     "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-                                  )
-                                  as ImageProvider,
+                                  ) as ImageProvider,
                       );
                     },
                   ),
@@ -138,10 +123,9 @@ class _MyProfileState extends State<MyProfile> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 12),
               Text(
-                _name,
+                _fullName,
                 style: textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: isDark ? Colors.white : Colors.black,
@@ -149,36 +133,24 @@ class _MyProfileState extends State<MyProfile> {
               ),
               const SizedBox(height: 4),
               Text(
-                _email,
+                _phoneNumber,
                 style: textTheme.bodyMedium?.copyWith(
                   color: isDark ? Colors.grey[400] : Colors.grey[700],
                 ),
               ),
-
               const SizedBox(height: 24),
               Divider(color: Colors.grey.shade400),
 
-              // Account Settings Section
-              const SizedBox(height: 8),
               _buildSectionTitle("Account Settings", theme),
               const SizedBox(height: 8),
               _buildListTile(
                 icon: Icons.edit,
                 title: "Edit Profile",
                 onTap: () async {
-                  // Navigate and wait for result
-                  final result = await Navigator.pushNamed(
-                    context,
-                    '/edit-profile',
-                  );
-
-                  if (result != null && result is Map<String, String>) {
-                    setState(() {
-                      _name = result['name'] ?? _name;
-                      _email = result['email'] ?? _email;
-                      // update shared notifier so Home and other pages reflect name
-                      profileNameNotifier.value = _name;
-                    });
+                  final result = await Navigator.pushNamed(context, '/edit-profile');
+                  if (result != null && result is Map<String, dynamic>) {
+                    ProfileController.setUserData(result);
+                    setState(() {}); 
                   }
                 },
               ),
@@ -196,8 +168,6 @@ class _MyProfileState extends State<MyProfile> {
                   Navigator.pushNamed(context, '/my-orders');
                 },
               ),
-
-              // Theme toggle moved here (under My Orders)
               const SizedBox(height: 8),
               ValueListenableBuilder<bool>(
                 valueListenable: isDarkNotifier,
@@ -228,11 +198,8 @@ class _MyProfileState extends State<MyProfile> {
                   );
                 },
               ),
-
               const SizedBox(height: 24),
               Divider(color: Colors.grey.shade400),
-
-              // Logout Button
               const SizedBox(height: 8),
               _buildListTile(
                 icon: Icons.logout,
@@ -280,11 +247,8 @@ class _MyProfileState extends State<MyProfile> {
         title: Text(
           title,
           style: TextStyle(
-            color:
-                textColor ??
-                (isDark
-                    ? Colors.white.withOpacity(0.9)
-                    : Colors.black.withOpacity(0.9)),
+            color: textColor ??
+                (isDark ? Colors.white.withOpacity(0.9) : Colors.black.withOpacity(0.9)),
             fontWeight: FontWeight.w500,
           ),
         ),

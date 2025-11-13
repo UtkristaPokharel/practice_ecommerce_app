@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'controller/profile_controller.dart';
 
 class MyLogin extends StatefulWidget {
   const MyLogin({super.key});
@@ -53,6 +54,11 @@ class _MyLoginState extends State<MyLogin> {
           (data['status'] == true || data['success'] == true)) {
         final userData = data['data'] ?? data['user'];
         final userName = userData?['first_name'] ?? userData?['name'] ?? 'User';
+        
+        // 🔥 Store user data in ProfileController
+        if (userData != null) {
+          ProfileController.setUserData(userData);
+        }
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

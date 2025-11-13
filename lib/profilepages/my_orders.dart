@@ -25,7 +25,7 @@ final ValueNotifier<List<OrderItem>> ordersNotifier =
 
 void addOrder(OrderItem order) {
   final list = List<OrderItem>.from(ordersNotifier.value);
-  list.insert(0, order); 
+  list.insert(0, order);
   ordersNotifier.value = list;
 }
 

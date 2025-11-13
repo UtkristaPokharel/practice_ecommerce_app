@@ -62,14 +62,16 @@ class _MysignupState extends State<Mysignup> {
       final data = jsonDecode(response.body);
 
       // Check for successful response with more flexible conditions
-      if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 203) {
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 203) {
         // Check if status is true or success is true
         final isSuccess = data['status'] == true || data['success'] == true;
-        
+
         if (isSuccess) {
           final userData = data['data'] ?? data['user'];
           final userName = userData?['first_name'] ?? userData?['name'] ?? '';
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Signup Successful! Welcome $userName'),
@@ -91,8 +93,8 @@ class _MysignupState extends State<Mysignup> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              data['message'] ?? 
-              'This mobile number is already registered. Please use a different number or login.',
+              data['message'] ??
+                  'This mobile number is already registered. Please use a different number or login.',
             ),
             backgroundColor: Colors.orange,
             duration: const Duration(seconds: 4),
@@ -109,14 +111,12 @@ class _MysignupState extends State<Mysignup> {
             errorMessage = 'Server error. Please try again later.';
             break;
           default:
-            errorMessage = data['message'] ?? 'Signup failed. Please try again.';
+            errorMessage =
+                data['message'] ?? 'Signup failed. Please try again.';
         }
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
         );
       }
     } catch (e) {

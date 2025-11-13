@@ -40,13 +40,12 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
         toolbarHeight: 80,
         title: Row(
           children: [
-            // Show the shared profile image if the user uploaded one,
-            // otherwise fall back to a default network icon (same as Profile page)
             ValueListenableBuilder<File?>(
               valueListenable: profileImageNotifier,
               builder: (context, file, _) {

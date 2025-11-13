@@ -47,9 +47,6 @@ class _MyLoginState extends State<MyLogin> {
         }),
       );
 
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-
       final data = jsonDecode(response.body);
 
       if ((response.statusCode == 200 || response.statusCode == 203) && 

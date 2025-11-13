@@ -145,7 +145,7 @@ class _OtpVerificationState extends State<OtpVerification> {
     setState(() => _isResending = true);
 
     const String url =
-        'https://ecommerce.atithyahms.com/api/v2/ecommerce/customer/resend-otp';
+        'https://ecommerce.atithyahms.com/api/ecommerce/customer/otp/resend';
 
     try {
       final response = await http.post(

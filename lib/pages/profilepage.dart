@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:ecommerce_practice/controller/theme_controller.dart';
 import 'package:ecommerce_practice/controller/profile_controller.dart';
+import 'package:ecommerce_practice/profilepages/logout.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
@@ -64,6 +65,22 @@ class _MyProfileState extends State<MyProfile> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showLogoutDialog() {
+    LogoutDialog.show(
+      context,
+      onLogoutConfirmed: () {
+        // Clear user data in this widget's state
+        setState(() {
+          _name = "John Doe";
+          _email = "john.doe@example.com";
+        });
+        
+        // Clear global profile data
+        LogoutDialog.clearUserData();
+      },
     );
   }
 
@@ -222,7 +239,7 @@ class _MyProfileState extends State<MyProfile> {
                 title: "Logout",
                 iconColor: Colors.red,
                 textColor: Colors.red,
-                onTap: () {},
+                onTap: _showLogoutDialog,
               ),
             ],
           ),

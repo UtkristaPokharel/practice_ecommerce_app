@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'controller/theme_controller.dart';
 
 class Mysignup extends StatefulWidget {
   const Mysignup({super.key});
@@ -139,141 +140,224 @@ class _MysignupState extends State<Mysignup> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/signup.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(left: 35, top: 130),
-              child: const Text(
-                'Sign Up',
-                style: TextStyle(color: Colors.white, fontSize: 33),
-              ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: isDarkNotifier,
+      builder: (context, isDark, child) {
+        return Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: const AssetImage('assets/signup.png'),
+              fit: BoxFit.cover,
+              colorFilter: isDark
+                  ? ColorFilter.mode(
+                      Colors.black.withOpacity(0.6),
+                      BlendMode.darken,
+                    )
+                  : null,
             ),
-            SingleChildScrollView(
-              child: Center(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 250),
-                    Form(
-                      key: _formKey,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 35),
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: _firstNameController,
-                              decoration: InputDecoration(
-                                fillColor: Colors.grey.shade200,
-                                filled: true,
-                                hintText: 'First Name',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _lastNameController,
-                              decoration: InputDecoration(
-                                fillColor: Colors.grey.shade200,
-                                filled: true,
-                                hintText: 'Last Name',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _mobileController,
-                              keyboardType: TextInputType.phone,
-                              decoration: InputDecoration(
-                                fillColor: Colors.grey.shade200,
-                                filled: true,
-                                hintText: 'Mobile Number',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            TextFormField(
-                              controller: _passwordController,
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                fillColor: Colors.grey.shade100,
-                                filled: true,
-                                hintText: 'Password',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 40),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Stack(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(left: 35, top: 130),
+                  child: const Text(
+                    'Sign Up',
+                    style: TextStyle(color: Colors.white, fontSize: 33),
+                  ),
+                ),
+                SingleChildScrollView(
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 250),
+                        Form(
+                          key: _formKey,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 35),
+                            child: Column(
                               children: [
-                                const Text(
-                                  'Sign Up',
+                                TextFormField(
+                                  controller: _firstNameController,
                                   style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 27,
-                                    fontWeight: FontWeight.w700,
+                                    color: isDark ? Colors.white : Colors.black,
                                   ),
-                                ),
-                                CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: const Color(0xff4c505b),
-                                  child: _isLoading
-                                      ? const CircularProgressIndicator(
-                                          color: Colors.white,
-                                        )
-                                      : IconButton(
-                                          color: Colors.white,
-                                          onPressed: _signupUser,
-                                          icon: const Icon(Icons.arrow_forward),
-                                        ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/login');
-                                  },
-                                  child: const Text(
-                                    'Sign In',
-                                    style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      fontSize: 18,
-                                      color: Color(0xff4c505b),
+                                  decoration: InputDecoration(
+                                    fillColor: isDark
+                                        ? Colors.grey.shade800
+                                        : Colors.grey.shade200,
+                                    filled: true,
+                                    hintText: 'First Name',
+                                    hintStyle: TextStyle(
+                                      color: isDark
+                                          ? Colors.grey.shade400
+                                          : Colors.grey.shade600,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
                                 ),
+                                const SizedBox(height: 20),
+                                TextFormField(
+                                  controller: _lastNameController,
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black,
+                                  ),
+                                  decoration: InputDecoration(
+                                    fillColor: isDark
+                                        ? Colors.grey.shade800
+                                        : Colors.grey.shade200,
+                                    filled: true,
+                                    hintText: 'Last Name',
+                                    hintStyle: TextStyle(
+                                      color: isDark
+                                          ? Colors.grey.shade400
+                                          : Colors.grey.shade600,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                TextFormField(
+                                  controller: _mobileController,
+                                  keyboardType: TextInputType.phone,
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black,
+                                  ),
+                                  decoration: InputDecoration(
+                                    fillColor: isDark
+                                        ? Colors.grey.shade800
+                                        : Colors.grey.shade200,
+                                    filled: true,
+                                    hintText: 'Mobile Number',
+                                    hintStyle: TextStyle(
+                                      color: isDark
+                                          ? Colors.grey.shade400
+                                          : Colors.grey.shade600,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                TextFormField(
+                                  controller: _passwordController,
+                                  obscureText: true,
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black,
+                                  ),
+                                  decoration: InputDecoration(
+                                    fillColor: isDark
+                                        ? Colors.grey.shade800
+                                        : Colors.grey.shade100,
+                                    filled: true,
+                                    hintText: 'Password',
+                                    hintStyle: TextStyle(
+                                      color: isDark
+                                          ? Colors.grey.shade400
+                                          : Colors.grey.shade600,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Sign Up',
+                                      style: TextStyle(
+                                        color: isDark
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: 27,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    CircleAvatar(
+                                      radius: 30,
+                                      backgroundColor: const Color(0xff4c505b),
+                                      child: _isLoading
+                                          ? const CircularProgressIndicator(
+                                              color: Colors.white,
+                                            )
+                                          : IconButton(
+                                              color: Colors.white,
+                                              onPressed: _signupUser,
+                                              icon: const Icon(
+                                                  Icons.arrow_forward),
+                                            ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, '/login');
+                                      },
+                                      child: Text(
+                                        'Sign In',
+                                        style: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          fontSize: 18,
+                                          color: isDark
+                                              ? Colors.white70
+                                              : const Color(0xff4c505b),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Dark mode toggle button - placed last to be on top
+                SafeArea(
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Material(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(30),
+                        child: IconButton(
+                          onPressed: () {
+                            isDarkNotifier.value = !isDarkNotifier.value;
+                            print('Dark mode toggled: ${isDarkNotifier.value}');
+                          },
+                          icon: Icon(
+                            isDark ? Icons.light_mode : Icons.dark_mode,
+                            color: Colors.white,
+                            size: 26,
+                          ),
+                          tooltip: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
                         ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

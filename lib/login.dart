@@ -118,7 +118,7 @@ class _MyLoginState extends State<MyLogin> {
                   padding: const EdgeInsets.only(left: 35, top: 130),
                   child: const Text(
                     'Welcome\nBack',
-                    style: TextStyle(color: Colors.white, fontSize: 33),
+                    style: TextStyle(color: Colors.white, fontSize: 35, fontWeight: FontWeight.bold),
                   ),
                 ),
                 SingleChildScrollView(

@@ -127,6 +127,7 @@ class _DescriptionPageState extends State<DescriptionPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       final wasInCart = isInCartItem;
+
                       // toggle the item in the global cart notifier
                       toggleCartItem(_cartItem);
 
@@ -148,7 +149,10 @@ class _DescriptionPageState extends State<DescriptionPage> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
+                      // Change color dynamically
+                      backgroundColor: isInCartItem
+                          ? Colors.red
+                          : Colors.blueAccent,
                       foregroundColor: Colors.white,
                       minimumSize: const Size(0, 50),
                       textStyle: const TextStyle(

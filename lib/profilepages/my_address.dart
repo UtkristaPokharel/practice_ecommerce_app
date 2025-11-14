@@ -90,64 +90,6 @@ class _MyAddressPageState extends State<MyAddressPage> {
     _fetchAddresses(); // Refresh the list after editing
   }
 
-  Future<void> _deleteAddress(int addressId) async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Address'),
-        content: const Text('Are you sure you want to delete this address?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm == true) {
-      try {
-        final token = await AuthService.getToken();
-        final response = await http.delete(
-          Uri.parse('https://ecommerce.atithyahms.com/api/ecommerce/customer/address/$addressId'),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Accept': 'application/json',
-          },
-        );
-
-        if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Address deleted successfully'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          _fetchAddresses(); // Refresh the list
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to delete: ${response.statusCode}'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -286,19 +228,10 @@ class _MyAddressPageState extends State<MyAddressPage> {
                       ],
                     ),
                   ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, size: 20),
-                        onPressed: () => _editAddress(address),
-                        tooltip: 'Edit',
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, size: 20, color: Colors.red),
-                        onPressed: () => _deleteAddress(address['id']),
-                        tooltip: 'Delete',
-                      ),
-                    ],
+                  IconButton(
+                    icon: const Icon(Icons.edit, size: 20),
+                    onPressed: () => _editAddress(address),
+                    tooltip: 'Edit',
                   ),
                 ],
               ),

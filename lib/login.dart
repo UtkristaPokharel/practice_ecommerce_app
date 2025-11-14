@@ -55,13 +55,14 @@ class _MyLoginState extends State<MyLogin> {
           (data['status'] == true || data['success'] == true)) {
         final userData = data['data'] ?? data['user'];
         final userName = userData?['first_name'] ?? userData?['name'] ?? 'User';
+        final apiToken = data['api_token'];
         
         if (userData != null) {
           final Map<String, dynamic> completeUserData = Map.from(userData);
           if (RegExp(r'^\d+$').hasMatch(username)) {
             completeUserData['mobile_no'] = username;
           }
-          ProfileController.setUserData(completeUserData);
+          await ProfileController.setUserData(completeUserData, token: apiToken);
         }
         
         ScaffoldMessenger.of(context).showSnackBar(

@@ -12,8 +12,19 @@ import 'package:ecommerce_practice/controller/theme_controller.dart';
 import 'package:ecommerce_practice/profilepages/edit_profile.dart';
 import 'package:ecommerce_practice/profilepages/shipping_address.dart';
 import 'package:ecommerce_practice/profilepages/my_orders.dart';
+import 'package:ecommerce_practice/controller/profile_controller.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Load saved user data on app startup with error handling
+  try {
+    await ProfileController.loadUserData();
+  } catch (e) {
+    print('Warning: Could not load user data on startup: $e');
+    // App will continue to run, user can login normally
+  }
+  
   runApp(const MyApp());
 }
 

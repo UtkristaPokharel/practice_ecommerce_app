@@ -57,9 +57,12 @@ class LogoutDialog {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop();
+                
+                await ProfileController.clearUserData();
                 onLogoutConfirmed();
+                
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   '/login',
                   (Route<dynamic> route) => false,

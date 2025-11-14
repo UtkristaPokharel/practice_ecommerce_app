@@ -22,6 +22,30 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
   final TextEditingController _nicknameController = TextEditingController();
   
   bool _isLoading = false;
+  bool _isEditMode = false;
+  int? _addressId;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // Get address data from route arguments if editing
+    final address = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    
+    if (address != null && !_isEditMode) {
+      _isEditMode = true;
+      _addressId = address['id'];
+      
+      // Pre-populate form fields
+      _nicknameController.text = address['nickname'] ?? '';
+      _deliveryAreaController.text = address['delivery_area'] ?? '';
+      _completeAddressController.text = address['complete_address'] ?? '';
+      _contactNoController.text = address['contact_no'] ?? '';
+      _deliveryInstructionsController.text = address['delivery_instructions'] ?? '';
+      _latitudeController.text = address['latitude']?.toString() ?? '';
+      _longitudeController.text = address['longitude']?.toString() ?? '';
+    }
+  }
 
   @override
   void dispose() {
@@ -73,6 +97,11 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
         'delivery_instructions': _deliveryInstructionsController.text,
       };
 
+      // Add address ID if editing
+      if (_isEditMode && _addressId != null) {
+        body['id'] = _addressId.toString();
+      }
+
       // Add optional fields if provided
       if (_latitudeController.text.isNotEmpty) {
         body['latitude'] = _latitudeController.text;
@@ -82,10 +111,15 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
       }
 
       print('Sending address data: $body'); // Debug print
+      print('Edit mode: $_isEditMode'); // Debug print
 
-      // Use the correct endpoint for saving address
+      // Use the correct endpoint based on mode
+      final endpoint = _isEditMode
+          ? 'https://ecommerce.atithyahms.com/api/ecommerce/customer/address/update'
+          : 'https://ecommerce.atithyahms.com/api/ecommerce/customer/address/save';
+
       final response = await http.post(
-        Uri.parse('https://ecommerce.atithyahms.com/api/ecommerce/customer/address/save'),
+        Uri.parse(endpoint),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -106,22 +140,28 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
           final data = jsonDecode(response.body);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(data['message'] ?? 'Address saved successfully!'),
+              content: Text(data['message'] ?? (_isEditMode ? 'Address updated successfully!' : 'Address saved successfully!')),
               backgroundColor: Colors.green,
             ),
           );
-          // Clear form
-          _formKey.currentState!.reset();
-          _deliveryAreaController.clear();
-          _completeAddressController.clear();
-          _contactNoController.clear();
-          _deliveryInstructionsController.clear();
-          _latitudeController.clear();
-          _longitudeController.clear();
-          _nicknameController.clear();
+          
+          // Navigate back if editing, clear form if creating
+          if (_isEditMode) {
+            Navigator.pop(context);
+          } else {
+            // Clear form
+            _formKey.currentState!.reset();
+            _deliveryAreaController.clear();
+            _completeAddressController.clear();
+            _contactNoController.clear();
+            _deliveryInstructionsController.clear();
+            _latitudeController.clear();
+            _longitudeController.clear();
+            _nicknameController.clear();
+          }
         } else {
           // Parse error message from response
-          String errorMessage = 'Failed to save address: ${response.statusCode}';
+          String errorMessage = 'Failed to ${_isEditMode ? 'update' : 'save'} address: ${response.statusCode}';
           try {
             final errorData = jsonDecode(response.body);
             if (errorData['message'] != null) {
@@ -164,7 +204,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Shipping Address'),
+        title: Text(_isEditMode ? 'Edit Address' : 'Shipping Address'),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -174,9 +214,9 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                'Add New Address',
-                style: TextStyle(
+              Text(
+                _isEditMode ? 'Edit Address' : 'Add New Address',
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -338,9 +378,9 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                         width: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text(
-                        'Save Address',
-                        style: TextStyle(fontSize: 16),
+                    : Text(
+                        _isEditMode ? 'Update Address' : 'Save Address',
+                        style: const TextStyle(fontSize: 16),
                       ),
               ),
             ],

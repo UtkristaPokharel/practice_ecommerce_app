@@ -80,6 +80,16 @@ class _MyAddressPageState extends State<MyAddressPage> {
     }
   }
 
+  Future<void> _editAddress(dynamic address) async {
+    // Navigate to shipping address page with address data
+    await Navigator.pushNamed(
+      context,
+      '/shipping-address',
+      arguments: address, // Pass the address data for editing
+    );
+    _fetchAddresses(); // Refresh the list after editing
+  }
+
   Future<void> _deleteAddress(int addressId) async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -280,12 +290,7 @@ class _MyAddressPageState extends State<MyAddressPage> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.edit, size: 20),
-                        onPressed: () {
-                          // TODO: Navigate to edit address
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Edit feature coming soon')),
-                          );
-                        },
+                        onPressed: () => _editAddress(address),
                         tooltip: 'Edit',
                       ),
                       IconButton(

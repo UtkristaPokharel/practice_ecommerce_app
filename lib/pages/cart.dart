@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/pages/description.dart';
-import 'package:ecommerce_practice/profilepages/my_orders.dart';
+import 'package:ecommerce_practice/pages/checkout.dart';
 
 class CartItem {
   final String title;
@@ -264,32 +264,13 @@ class CartPage extends StatelessWidget {
                           return;
                         }
 
-                        // Transfer selected items to orders
-                        for (var item in selectedItems) {
-                          addOrder(
-                            OrderItem(
-                              title: item.title,
-                              imageUrl: item.imageUrl,
-                              price: item.price,
-                              description: item.description,
-                              quantity: item.quantity,
-                              orderDate: DateTime.now(),
+                        // Navigate to checkout page
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => CheckoutPage(
+                              selectedItems: selectedItems,
+                              totalAmount: calculateTotal(list),
                             ),
-                          );
-                        }
-
-                        // Remove selected items from cart
-                        final remainingItems = list
-                            .where((item) => !item.isSelected)
-                            .toList();
-                        cartNotifier.value = remainingItems;
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Order placed successfully! ${selectedItems.length} item(s) ordered.',
-                            ),
-                            backgroundColor: Colors.green,
                           ),
                         );
                       },

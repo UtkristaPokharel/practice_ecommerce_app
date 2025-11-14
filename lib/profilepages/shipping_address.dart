@@ -110,9 +110,6 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
         body['longitude'] = _longitudeController.text;
       }
 
-      print('Sending address data: $body'); // Debug print
-      print('Edit mode: $_isEditMode'); // Debug print
-
       // Use the correct endpoint based on mode
       final endpoint = _isEditMode
           ? 'https://ecommerce.atithyahms.com/api/ecommerce/customer/address/update'
@@ -127,9 +124,6 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
         },
         body: jsonEncode(body),
       );
-
-      print('Response status: ${response.statusCode}'); // Debug print
-      print('Response body: ${response.body}'); // Debug print
 
       if (mounted) {
         setState(() {
@@ -172,7 +166,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
               errorMessage = errors.values.first.toString();
             }
           } catch (e) {
-            print('Error parsing response: $e');
+            // Error parsing response
           }
           
           ScaffoldMessenger.of(context).showSnackBar(
@@ -185,7 +179,6 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
         }
       }
     } catch (e) {
-      print('Exception: $e'); // Debug print
       if (mounted) {
         setState(() {
           _isLoading = false;

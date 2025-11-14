@@ -47,9 +47,6 @@ class _MyAddressPageState extends State<MyAddressPage> {
         },
       );
 
-      print('Address fetch status: ${response.statusCode}');
-      print('Address fetch response: ${response.body}');
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
@@ -72,7 +69,6 @@ class _MyAddressPageState extends State<MyAddressPage> {
         });
       }
     } catch (e) {
-      print('Error fetching addresses: $e');
       setState(() {
         isLoading = false;
         errorMessage = 'Error: $e';

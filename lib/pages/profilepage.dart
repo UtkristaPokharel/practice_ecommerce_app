@@ -161,9 +161,16 @@ class _MyProfileState extends State<MyProfile> {
               ),
               _buildListTile(
                 icon: Icons.location_on,
-                title: "Shipping Address",
+                title: "Add Shipping Address",
                 onTap: () {
                   Navigator.pushNamed(context, '/shipping-address');
+                },
+              ),
+              _buildListTile(
+                icon: Icons.home,
+                title: "My Addresses",
+                onTap: () {
+                  Navigator.pushNamed(context, '/my-address');
                 },
               ),
               _buildListTile(

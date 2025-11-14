@@ -31,7 +31,7 @@ class AuthService {
 
   /// Save authentication token
   static Future<void> saveToken(String token) async {
-    _memoryToken = token; // Always save in memory
+    _memoryToken = token;
     try {
       final prefs = await _getPrefs();
       if (prefs != null) {

@@ -26,7 +26,7 @@ class LogoutDialog {
               ),
               const SizedBox(width: 12),
               Text(
-                'Logout',
+                'Logout' ,
                 style: TextStyle(
                   color: isDark ? Colors.white : Colors.black,
                   fontWeight: FontWeight.bold,

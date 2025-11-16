@@ -39,14 +39,20 @@ class _MygridState extends State<Mygrid> {
   @override
   void didUpdateWidget(Mygrid oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.apiEndpoint != widget.apiEndpoint) {
+    if (oldWidget.apiEndpoint != widget.apiEndpoint ||
+        oldWidget.searchQuery != widget.searchQuery) {
       _futureProducts = fetchProducts();
     }
   }
 
   Future<List<Map<String, String>>> fetchProducts() async {
+    final shouldSearchAllProducts = widget.searchQuery.trim().isNotEmpty;
+    final endpointToUse = shouldSearchAllProducts
+        ? 'https://ecommerce.atithyahms.com/api/ecommerce/products/all'
+        : widget.apiEndpoint;
+    
     final response = await http.get(
-      Uri.parse(widget.apiEndpoint),
+      Uri.parse(endpointToUse),
     );
 
     if (response.statusCode == 200) {

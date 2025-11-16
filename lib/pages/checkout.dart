@@ -162,19 +162,25 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
           if (result['data'] != null) {
             final data = result['data'];
-            // Try different possible key names for order ID
+            // Check for nested data structure first
             orderId =
+                data['data']?['order_no']?.toString() ??
+                data['data']?['orderNo']?.toString() ??
+                data['order_no']?.toString() ??
+                data['orderNo']?.toString() ??
                 data['order_id']?.toString() ??
                 data['orderId']?.toString() ??
                 data['id']?.toString() ??
+                data['order']?['order_no']?.toString() ??
                 data['order']?['id']?.toString() ??
-                data['data']?['id']?.toString() ??
                 'N/A';
           }
 
           // If still N/A, try at the top level
           if (orderId == 'N/A') {
             orderId =
+                result['order_no']?.toString() ??
+                result['orderNo']?.toString() ??
                 result['order_id']?.toString() ??
                 result['orderId']?.toString() ??
                 result['id']?.toString() ??

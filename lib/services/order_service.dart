@@ -5,6 +5,55 @@ import 'auth_service.dart';
 class OrderService {
   static const String baseUrl =
       'https://ecommerce.atithyahms.com/api/v2/ecommerce/customer/orders';
+  static const String trackBaseUrl =
+      'https://ecommerce.atithyahms.com/api/ecommerce/customer/orders';
+
+  /// Fetch tracked orders from the API
+  static Future<Map<String, dynamic>> fetchTrackedOrders() async {
+    try {
+      final token = await AuthService.getToken();
+
+      if (token == null) {
+        return {'success': false, 'message': 'Please login first', 'data': []};
+      }
+
+      final response = await http.get(
+        Uri.parse('$trackBaseUrl/track'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print('📦 Track Orders Response Status: ${response.statusCode}');
+      print('📦 Track Orders Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return {
+          'success': true,
+          'message': 'Orders fetched successfully',
+          'data': data['data'] ?? [],
+        };
+      } else {
+        String errorMessage = 'Failed to fetch orders: ${response.statusCode}';
+        try {
+          final errorData = jsonDecode(response.body);
+          if (errorData['message'] != null) {
+            errorMessage = errorData['message'];
+          }
+        } catch (e) {
+          print('📦 Error parsing response: $e');
+        }
+
+        return {'success': false, 'message': errorMessage, 'data': []};
+      }
+    } catch (e) {
+      print('📦 Exception fetching orders: $e');
+      return {'success': false, 'message': 'Error: $e', 'data': []};
+    }
+  }
 
   static Future<Map<String, dynamic>> placeOrder({
     required int deliveryAddressId,
@@ -33,7 +82,7 @@ class OrderService {
       };
 
       print('📦 Placing order with body: ${jsonEncode(body)}');
-      
+
       final response = await http.post(
         Uri.parse('$baseUrl/place'),
         headers: {

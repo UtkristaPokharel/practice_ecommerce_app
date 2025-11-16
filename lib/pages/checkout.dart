@@ -4,7 +4,6 @@ import 'dart:convert';
 import '../services/auth_service.dart';
 import '../services/order_service.dart';
 import 'cart.dart';
-import '../profilepages/my_orders.dart';
 
 class CheckoutPage extends StatefulWidget {
   final List<CartItem> selectedItems;
@@ -142,19 +141,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
       });
 
       if (result['success'] == true) {
-        // Transfer selected items to orders
-        for (var item in widget.selectedItems) {
-          addOrder(
-            OrderItem(
-              title: item.title,
-              imageUrl: item.imageUrl,
-              price: item.price,
-              description: item.description,
-              quantity: item.quantity,
-              orderDate: DateTime.now(),
-            ),
-          );
-        }
+        // Note: Orders will be fetched from the API in My Orders page
+        // No need to manually add orders here anymore
 
         // Remove selected items from cart
         final currentCart = List<CartItem>.from(cartNotifier.value);

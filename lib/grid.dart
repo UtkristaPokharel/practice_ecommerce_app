@@ -21,7 +21,8 @@ class Mygrid extends StatefulWidget {
     this.category = 'All',
     required this.onCategoriesFetched,
     this.description = '',
-    this.apiEndpoint = 'https://ecommerce.atithyahms.com/api/ecommerce/products/all',
+    this.apiEndpoint =
+        'https://ecommerce.atithyahms.com/api/ecommerce/products/all',
   });
 
   @override
@@ -51,10 +52,8 @@ class _MygridState extends State<Mygrid> {
     final endpointToUse = shouldSearchAllProducts
         ? 'https://ecommerce.atithyahms.com/api/ecommerce/products/all'
         : widget.apiEndpoint;
-    
-    final response = await http.get(
-      Uri.parse(endpointToUse),
-    );
+
+    final response = await http.get(Uri.parse(endpointToUse));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body)['data'] as List;
@@ -136,6 +135,7 @@ class _MygridState extends State<Mygrid> {
               final imageUrl = item['image']!;
               final price = item['price']!;
               final description = item['description']!;
+              final isDark = Theme.of(context).brightness == Brightness.dark;
 
               return InkWell(
                 onTap: () {
@@ -153,9 +153,17 @@ class _MygridState extends State<Mygrid> {
                 },
                 borderRadius: BorderRadius.circular(15.0),
                 child: Card(
+                  elevation: isDark ? 4 : 1,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
+                    side: BorderSide(
+                      color: isDark ? Colors.grey.shade700 : Colors.transparent,
+                      width: 1,
+                    ),
                   ),
+                  color: isDark
+                      ? Colors.grey.shade900.withValues(alpha: 0.5)
+                      : null,
                   clipBehavior: Clip.antiAlias,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -181,7 +189,7 @@ class _MygridState extends State<Mygrid> {
                         ),
                       ),
                       Container(
-                        color: Colors.white,
+                        color: isDark ? Colors.grey.shade800 : Colors.white,
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
@@ -189,7 +197,7 @@ class _MygridState extends State<Mygrid> {
                               title,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Colors.black,
+                                color: isDark ? Colors.white : Colors.black,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -207,9 +215,10 @@ class _MygridState extends State<Mygrid> {
                                   description: description,
                                 );
                                 final inCart = isInCart(cartItem);
-                                
+
                                 return Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       'Rs $price',
@@ -223,27 +232,45 @@ class _MygridState extends State<Mygrid> {
                                       onPressed: () {
                                         if (inCart) {
                                           removeCartItem(cartItem);
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
                                             SnackBar(
-                                              content: Text('$title removed from cart'),
-                                              duration: const Duration(seconds: 1),
+                                              content: Text(
+                                                '$title removed from cart',
+                                              ),
+                                              duration: const Duration(
+                                                seconds: 1,
+                                              ),
                                             ),
                                           );
                                         } else {
                                           addCartItem(cartItem);
-                                          ScaffoldMessenger.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
                                             SnackBar(
-                                              content: Text('$title added to cart'),
-                                              duration: const Duration(seconds: 1),
+                                              content: Text(
+                                                '$title added to cart',
+                                              ),
+                                              duration: const Duration(
+                                                seconds: 1,
+                                              ),
                                             ),
                                           );
                                         }
                                       },
                                       icon: Icon(
-                                        inCart ? Icons.remove_shopping_cart : Icons.add_shopping_cart,
+                                        inCart
+                                            ? Icons.remove_shopping_cart
+                                            : Icons.add_shopping_cart,
                                         size: 20,
                                       ),
-                                      color: inCart ? Colors.red : Theme.of(context).colorScheme.primary,
+                                      color: inCart
+                                          ? Colors.red
+                                          : Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
                                       padding: EdgeInsets.zero,
                                       constraints: const BoxConstraints(),
                                     ),

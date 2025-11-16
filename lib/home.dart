@@ -40,10 +40,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         toolbarHeight: 80,
         title: Row(
@@ -83,17 +84,17 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text(
                       'Hello ${name.isNotEmpty ? name.split(' ').first : 'User'}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: Colors.black54,
+                        color: isDark ? Colors.grey[400] : Colors.black54,
                       ),
                     ),
                     Text(
                       greeting + '!',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                     ),
                   ],
@@ -106,9 +107,9 @@ class _HomePageState extends State<HomePage> {
           Stack(
             children: [
               IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.notifications_none,
-                  color: Colors.black,
+                  color: isDark ? Colors.white : Colors.black,
                   size: 28,
                 ),
                 onPressed: () {},
@@ -145,12 +146,14 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Popular Products',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
                     ),
                   ),
                   TextButton(

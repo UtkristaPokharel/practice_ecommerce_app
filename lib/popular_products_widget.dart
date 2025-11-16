@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecommerce_practice/pages/description.dart';
+import 'package:ecommerce_practice/pages/cart.dart';
 
 class PopularProductsWidget extends StatefulWidget {
   final int maxProducts;
@@ -44,6 +45,11 @@ class _PopularProductsWidgetState extends State<PopularProductsWidget> {
     } else {
       throw Exception('Failed to load products');
     }
+  }
+
+  double _parsePrice(String raw) {
+    final cleaned = raw.replaceAll(RegExp(r'[^0-9.]'), '');
+    return double.tryParse(cleaned) ?? 0.0;
   }
 
   @override
@@ -145,14 +151,60 @@ class _PopularProductsWidgetState extends State<PopularProductsWidget> {
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Rs $price',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green,
-                            ),
+                          const SizedBox(height: 6),
+                          ValueListenableBuilder<List<CartItem>>(
+                            valueListenable: cartNotifier,
+                            builder: (context, cartList, _) {
+                              final cartItem = CartItem(
+                                title: title,
+                                imageUrl: imageUrl,
+                                price: _parsePrice(price),
+                                description: description,
+                              );
+                              final inCart = isInCart(cartItem);
+                              
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Rs $price',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      if (inCart) {
+                                        removeCartItem(cartItem);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('$title removed from cart'),
+                                            duration: const Duration(seconds: 1),
+                                          ),
+                                        );
+                                      } else {
+                                        addCartItem(cartItem);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('$title added to cart'),
+                                            duration: const Duration(seconds: 1),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    icon: Icon(
+                                      inCart ? Icons.remove_shopping_cart : Icons.add_shopping_cart,
+                                      size: 20,
+                                    ),
+                                    color: inCart ? Colors.red : Theme.of(context).colorScheme.primary,
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                         ],
                       ),

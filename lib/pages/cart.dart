@@ -231,7 +231,9 @@ class CartPage extends StatelessWidget {
                   horizontal: 16,
                   vertical: 12,
                 ),
-                color: Colors.grey.shade200,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey[900]
+                    : Colors.grey[100],
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -274,6 +276,10 @@ class CartPage extends StatelessWidget {
                           ),
                         );
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                      ),
                       child: const Text('Checkout'),
                     ),
                   ],

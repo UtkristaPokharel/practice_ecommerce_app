@@ -202,7 +202,7 @@ class _MyAddressPageState extends State<MyAddressPage> {
                       children: [
                         Icon(
                           Icons.location_on,
-                          color: theme.primaryColor,
+                          color: Colors.blue,
                           size: 20,
                         ),
                         const SizedBox(width: 8),
@@ -212,7 +212,7 @@ class _MyAddressPageState extends State<MyAddressPage> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: theme.primaryColor,
+                              color: isDark ? Colors.white : Colors.black87,
                             ),
                           ),
                         ),

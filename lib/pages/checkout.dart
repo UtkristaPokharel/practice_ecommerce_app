@@ -390,8 +390,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                                       Icon(
                                                         Icons.location_on,
                                                         size: 18,
-                                                        color:
-                                                            theme.primaryColor,
+                                                        color: Colors.blue,
                                                       ),
                                                       const SizedBox(width: 4),
                                                       Text(
@@ -401,8 +400,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          color: theme
-                                                              .primaryColor,
+                                                          color: isDark
+                                                              ? Colors.white
+                                                              : Colors.black87,
                                                         ),
                                                       ),
                                                     ],
@@ -481,7 +481,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.grey[900] : Colors.white,
+                    color: theme.scaffoldBackgroundColor,
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.1),
@@ -496,6 +496,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       child: ElevatedButton(
                         onPressed: isPlacingOrder ? null : _placeOrder,
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:ecommerce_practice/grid.dart';
 import 'package:ecommerce_practice/searchbar.dart';
 import 'package:ecommerce_practice/controller/profile_controller.dart';
+import 'package:ecommerce_practice/popular_products_widget.dart';
+import 'package:ecommerce_practice/pages/popular_products.dart';
+import 'package:ecommerce_practice/banner_carousel.dart';
 
 class HomePage extends StatefulWidget {
   final String initialSearchQuery;
@@ -128,18 +130,53 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(width: 8), // spacing on the right
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            MySearchBar(onSearchChanged: _handleSearchChanged),
-            const SizedBox(height: 16.0),
-            Mygrid(
-              searchQuery: searchQuery,
-              onCategoriesFetched: (_) {},
-              apiEndpoint: 'https://ecommerce.atithyahms.com/api/ecommerce/products/popular',
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              MySearchBar(onSearchChanged: _handleSearchChanged),
+              const SizedBox(height: 16.0),
+              // Banner Carousel
+              const BannerCarousel(),
+              const SizedBox(height: 24.0),
+              // Popular Products Section Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Popular Products',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PopularProductsPage(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'See All',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8.0),
+              // Show only 4 popular products
+              const PopularProductsWidget(maxProducts: 4),
+            ],
+          ),
         ),
       ),
     );

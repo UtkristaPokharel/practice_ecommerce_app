@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../services/auth_service.dart';
 import '../services/order_service.dart';
+import '../widgets/order_success_dialog.dart';
 import 'cart.dart';
 
 class CheckoutPage extends StatefulWidget {
@@ -152,15 +153,51 @@ class _CheckoutPageState extends State<CheckoutPage> {
         cartNotifier.value = currentCart;
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(result['message'] ?? 'Order placed successfully!'),
-              backgroundColor: Colors.green,
-            ),
-          );
+          // Get order ID from the result - try multiple possible keys
+          String orderId = 'N/A';
 
-          // Navigate back to cart or home
-          Navigator.of(context).popUntil((route) => route.isFirst);
+          // Debug: print the entire result to see what we're getting
+          print('📦 Full API result: $result');
+          print('📦 Result data: ${result['data']}');
+
+          if (result['data'] != null) {
+            final data = result['data'];
+            // Try different possible key names for order ID
+            orderId =
+                data['order_id']?.toString() ??
+                data['orderId']?.toString() ??
+                data['id']?.toString() ??
+                data['order']?['id']?.toString() ??
+                data['data']?['id']?.toString() ??
+                'N/A';
+          }
+
+          // If still N/A, try at the top level
+          if (orderId == 'N/A') {
+            orderId =
+                result['order_id']?.toString() ??
+                result['orderId']?.toString() ??
+                result['id']?.toString() ??
+                'N/A';
+          }
+
+          print('📦 Extracted order ID: $orderId');
+
+          // Get order name (first item or multiple items description)
+          String? orderName;
+          if (widget.selectedItems.length == 1) {
+            orderName = widget.selectedItems.first.title;
+          } else if (widget.selectedItems.length > 1) {
+            orderName = '${widget.selectedItems.length} items';
+          }
+
+          // Show success dialog
+          await showOrderSuccessDialog(
+            context,
+            orderId: orderId,
+            totalAmount: widget.totalAmount,
+            orderName: orderName,
+          );
         }
       } else {
         if (mounted) {

@@ -174,7 +174,7 @@ class _MyAddressPageState extends State<MyAddressPage> {
   }
 
   Widget _buildAddressCard(dynamic address, bool isDark) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
@@ -193,7 +193,6 @@ class _MyAddressPageState extends State<MyAddressPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header with nickname and actions
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

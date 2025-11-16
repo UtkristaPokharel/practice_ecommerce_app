@@ -134,7 +134,11 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             MySearchBar(onSearchChanged: _handleSearchChanged),
             const SizedBox(height: 16.0),
-            Mygrid(searchQuery: searchQuery, onCategoriesFetched: (_) {}),
+            Mygrid(
+              searchQuery: searchQuery,
+              onCategoriesFetched: (_) {},
+              apiEndpoint: 'https://ecommerce.atithyahms.com/api/ecommerce/products/popular',
+            ),
           ],
         ),
       ),

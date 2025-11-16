@@ -10,6 +10,7 @@ class Mygrid extends StatefulWidget {
   final String category;
   final ValueChanged<List<String>> onCategoriesFetched;
   final String description;
+  final String apiEndpoint;
 
   const Mygrid({
     super.key,
@@ -19,6 +20,7 @@ class Mygrid extends StatefulWidget {
     this.category = 'All',
     required this.onCategoriesFetched,
     this.description = '',
+    this.apiEndpoint = 'https://ecommerce.atithyahms.com/api/ecommerce/products/all',
   });
 
   @override
@@ -34,9 +36,17 @@ class _MygridState extends State<Mygrid> {
     _futureProducts = fetchProducts();
   }
 
+  @override
+  void didUpdateWidget(Mygrid oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.apiEndpoint != widget.apiEndpoint) {
+      _futureProducts = fetchProducts();
+    }
+  }
+
   Future<List<Map<String, String>>> fetchProducts() async {
     final response = await http.get(
-      Uri.parse('https://ecommerce.atithyahms.com/api/ecommerce/products/all'),
+      Uri.parse(widget.apiEndpoint),
     );
 
     if (response.statusCode == 200) {

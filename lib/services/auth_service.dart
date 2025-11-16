@@ -19,7 +19,7 @@ class AuthService {
     if (_useMemoryFallback) {
       return null; // Skip SharedPreferences if we know it's not working
     }
-    
+
     try {
       return await SharedPreferences.getInstance();
     } catch (e) {
@@ -108,7 +108,7 @@ class AuthService {
     _memoryToken = null;
     _memoryUserData = null;
     _memoryIsLoggedIn = false;
-    
+
     try {
       final prefs = await _getPrefs();
       if (prefs != null) {

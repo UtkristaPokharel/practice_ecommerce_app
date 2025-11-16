@@ -6,7 +6,9 @@ import '../services/auth_service.dart';
 final ValueNotifier<File?> profileImageNotifier = ValueNotifier<File?>(null);
 
 // Notifier for profile name so Home can display the updated name
-final ValueNotifier<String> profileNameNotifier = ValueNotifier<String>('John Doe');
+final ValueNotifier<String> profileNameNotifier = ValueNotifier<String>(
+  'John Doe',
+);
 
 class ProfileController {
   // Store the logged-in user data globally
@@ -14,14 +16,17 @@ class ProfileController {
   static String? authToken;
 
   // Set user data after login or edit
-  static Future<void> setUserData(Map<String, dynamic> data, {String? token}) async {
+  static Future<void> setUserData(
+    Map<String, dynamic> data, {
+    String? token,
+  }) async {
     userData = data;
-    
+
     if (token != null) {
       authToken = token;
       await AuthService.saveToken(token);
     }
-    
+
     await AuthService.saveUserData(data);
 
     final firstName = data['first_name'] ?? '';
@@ -32,7 +37,7 @@ class ProfileController {
   static Future<void> loadUserData() async {
     userData = await AuthService.getUserData();
     authToken = await AuthService.getToken();
-    
+
     if (userData != null) {
       final firstName = userData!['first_name'] ?? '';
       final lastName = userData!['last_name'] ?? '';
@@ -46,7 +51,7 @@ class ProfileController {
     authToken = null;
     profileNameNotifier.value = 'John Doe';
     profileImageNotifier.value = null;
-    
+
     // Clear from persistent storage
     await AuthService.clearAuth();
   }
@@ -55,7 +60,12 @@ class ProfileController {
   static String get firstName => userData?['first_name'] ?? '';
   static String get lastName => userData?['last_name'] ?? '';
   static String get fullName => '${firstName} ${lastName}';
-  static String get phone => userData?['mobile_no'] ?? userData?['phone'] ?? userData?['mobile'] ?? userData?['phone_number'] ?? '';
+  static String get phone =>
+      userData?['mobile_no'] ??
+      userData?['phone'] ??
+      userData?['mobile'] ??
+      userData?['phone_number'] ??
+      '';
   static String? get token => authToken;
   static int? get userId => userData?['id'];
 }

@@ -42,9 +42,11 @@ class LogoutDialog {
                   : Colors.grey[700],
             ),
           ),
-          actionsAlignment: MainAxisAlignment.spaceBetween, 
-          actionsPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 5), 
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actionsPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 5,
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -59,10 +61,10 @@ class LogoutDialog {
             ElevatedButton(
               onPressed: () async {
                 Navigator.of(context).pop();
-                
+
                 await ProfileController.clearUserData();
                 onLogoutConfirmed();
-                
+
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   '/login',
                   (Route<dynamic> route) => false,
@@ -83,7 +85,9 @@ class LogoutDialog {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 12),
+                  horizontal: 20,
+                  vertical: 12,
+                ),
               ),
               child: const Text(
                 'Logout',

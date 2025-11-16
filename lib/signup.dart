@@ -73,12 +73,14 @@ class _MysignupState extends State<Mysignup> {
         if (isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Registration Successful! Please verify OTP sent to $mobile'),
+              content: Text(
+                'Registration Successful! Please verify OTP sent to $mobile',
+              ),
               backgroundColor: Colors.green,
               duration: const Duration(seconds: 3),
             ),
           );
-          
+
           // Navigate to OTP verification page
           Navigator.push(
             context,
@@ -303,7 +305,8 @@ class _MysignupState extends State<Mysignup> {
                                               color: Colors.white,
                                               onPressed: _signupUser,
                                               icon: const Icon(
-                                                  Icons.arrow_forward),
+                                                Icons.arrow_forward,
+                                              ),
                                             ),
                                     ),
                                   ],
@@ -357,7 +360,9 @@ class _MysignupState extends State<Mysignup> {
                             color: Colors.white,
                             size: 26,
                           ),
-                          tooltip: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
+                          tooltip: isDark
+                              ? 'Switch to Light Mode'
+                              : 'Switch to Dark Mode',
                         ),
                       ),
                     ),

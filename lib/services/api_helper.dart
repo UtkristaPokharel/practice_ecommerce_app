@@ -3,10 +3,9 @@ import 'dart:convert';
 import 'auth_service.dart';
 
 class ApiHelper {
-  
-  static const String baseUrl = 'https://ecommerce.atithyahms.com/api/ecommerce';
+  static const String baseUrl =
+      'https://ecommerce.atithyahms.com/api/ecommerce';
 
-  
   static Future<Map<String, String>> getAuthHeaders() async {
     final token = await AuthService.getToken();
     return {
@@ -30,11 +29,7 @@ class ApiHelper {
   ) async {
     final headers = await getAuthHeaders();
     final url = Uri.parse('$baseUrl$endpoint');
-    return await http.post(
-      url,
-      headers: headers,
-      body: jsonEncode(body),
-    );
+    return await http.post(url, headers: headers, body: jsonEncode(body));
   }
 
   /// Make an authenticated PUT request
@@ -44,11 +39,7 @@ class ApiHelper {
   ) async {
     final headers = await getAuthHeaders();
     final url = Uri.parse('$baseUrl$endpoint');
-    return await http.put(
-      url,
-      headers: headers,
-      body: jsonEncode(body),
-    );
+    return await http.put(url, headers: headers, body: jsonEncode(body));
   }
 
   static Future<http.Response> delete(String endpoint) async {
@@ -56,7 +47,6 @@ class ApiHelper {
     final url = Uri.parse('$baseUrl$endpoint');
     return await http.delete(url, headers: headers);
   }
-
 
   static Future<Map<String, dynamic>?> fetchUserProfile() async {
     try {

@@ -214,6 +214,13 @@ class _MyProfileState extends State<MyProfile> {
               Divider(color: Colors.grey.shade400),
               const SizedBox(height: 8),
               _buildListTile(
+                icon: Icons.lock_reset,
+                title: "Reset Password",
+                onTap: () {
+                  Navigator.pushNamed(context, '/password-reset');
+                },
+              ),
+              _buildListTile(
                 icon: Icons.logout,
                 title: "Logout",
                 iconColor: Colors.red,

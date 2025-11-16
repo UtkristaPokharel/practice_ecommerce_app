@@ -39,7 +39,9 @@ class _MyAddressPageState extends State<MyAddressPage> {
       }
 
       final response = await http.get(
-        Uri.parse('https://ecommerce.atithyahms.com/api/ecommerce/customer/address'),
+        Uri.parse(
+          'https://ecommerce.atithyahms.com/api/ecommerce/customer/address',
+        ),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -54,7 +56,9 @@ class _MyAddressPageState extends State<MyAddressPage> {
           if (data['data'] != null) {
             addresses = data['data'] is List ? data['data'] : [data['data']];
           } else if (data['addresses'] != null) {
-            addresses = data['addresses'] is List ? data['addresses'] : [data['addresses']];
+            addresses = data['addresses'] is List
+                ? data['addresses']
+                : [data['addresses']];
           } else if (data is List) {
             addresses = data;
           } else {
@@ -110,81 +114,72 @@ class _MyAddressPageState extends State<MyAddressPage> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : errorMessage != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 64,
-                        color: Colors.red,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        errorMessage!,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _fetchAddresses,
-                        child: const Text('Retry'),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, size: 64, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text(errorMessage!, style: const TextStyle(fontSize: 16)),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _fetchAddresses,
+                    child: const Text('Retry'),
                   ),
-                )
-              : addresses.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.location_off,
-                            size: 64,
-                            color: isDark ? Colors.grey[600] : Colors.grey[400],
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'No addresses saved yet',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: isDark ? Colors.grey[400] : Colors.grey[600],
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          ElevatedButton.icon(
-                            onPressed: () async {
-                              await Navigator.pushNamed(context, '/shipping-address');
-                              _fetchAddresses();
-                            },
-                            icon: const Icon(Icons.add),
-                            label: const Text('Add Address'),
-                          ),
-                        ],
-                      ),
-                    )
-                  : RefreshIndicator(
-                      onRefresh: _fetchAddresses,
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: addresses.length,
-                        itemBuilder: (context, index) {
-                          final address = addresses[index];
-                          return _buildAddressCard(address, isDark);
-                        },
-                      ),
+                ],
+              ),
+            )
+          : addresses.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.location_off,
+                    size: 64,
+                    color: isDark ? Colors.grey[600] : Colors.grey[400],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No addresses saved yet',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
                     ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      await Navigator.pushNamed(context, '/shipping-address');
+                      _fetchAddresses();
+                    },
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Address'),
+                  ),
+                ],
+              ),
+            )
+          : RefreshIndicator(
+              onRefresh: _fetchAddresses,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: addresses.length,
+                itemBuilder: (context, index) {
+                  final address = addresses[index];
+                  return _buildAddressCard(address, isDark);
+                },
+              ),
+            ),
     );
   }
 
   Widget _buildAddressCard(dynamic address, bool isDark) {
     final theme = Theme.of(context);
-    
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
@@ -276,7 +271,8 @@ class _MyAddressPageState extends State<MyAddressPage> {
                 const SizedBox(height: 8),
               ],
 
-              if (address['latitude'] != null && address['longitude'] != null) ...[
+              if (address['latitude'] != null &&
+                  address['longitude'] != null) ...[
                 _buildAddressRow(
                   Icons.map,
                   'Coordinates',
@@ -291,7 +287,12 @@ class _MyAddressPageState extends State<MyAddressPage> {
     );
   }
 
-  Widget _buildAddressRow(IconData icon, String label, String value, bool isDark) {
+  Widget _buildAddressRow(
+    IconData icon,
+    String label,
+    String value,
+    bool isDark,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

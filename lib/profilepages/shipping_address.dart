@@ -14,13 +14,15 @@ class ShippingAddressPage extends StatefulWidget {
 class _ShippingAddressPageState extends State<ShippingAddressPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _deliveryAreaController = TextEditingController();
-  final TextEditingController _completeAddressController = TextEditingController();
+  final TextEditingController _completeAddressController =
+      TextEditingController();
   final TextEditingController _contactNoController = TextEditingController();
-  final TextEditingController _deliveryInstructionsController = TextEditingController();
+  final TextEditingController _deliveryInstructionsController =
+      TextEditingController();
   final TextEditingController _latitudeController = TextEditingController();
   final TextEditingController _longitudeController = TextEditingController();
   final TextEditingController _nicknameController = TextEditingController();
-  
+
   bool _isLoading = false;
   bool _isEditMode = false;
   int? _addressId;
@@ -28,20 +30,22 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Get address data from route arguments if editing
-    final address = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    
+    final address =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
     if (address != null && !_isEditMode) {
       _isEditMode = true;
       _addressId = address['id'];
-      
+
       // Pre-populate form fields
       _nicknameController.text = address['nickname'] ?? '';
       _deliveryAreaController.text = address['delivery_area'] ?? '';
       _completeAddressController.text = address['complete_address'] ?? '';
       _contactNoController.text = address['contact_no'] ?? '';
-      _deliveryInstructionsController.text = address['delivery_instructions'] ?? '';
+      _deliveryInstructionsController.text =
+          address['delivery_instructions'] ?? '';
       _latitudeController.text = address['latitude']?.toString() ?? '';
       _longitudeController.text = address['longitude']?.toString() ?? '';
     }
@@ -134,11 +138,16 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
           final data = jsonDecode(response.body);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(data['message'] ?? (_isEditMode ? 'Address updated successfully!' : 'Address saved successfully!')),
+              content: Text(
+                data['message'] ??
+                    (_isEditMode
+                        ? 'Address updated successfully!'
+                        : 'Address saved successfully!'),
+              ),
               backgroundColor: Colors.green,
             ),
           );
-          
+
           // Navigate back if editing, clear form if creating
           if (_isEditMode) {
             Navigator.pop(context);
@@ -155,7 +164,8 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
           }
         } else {
           // Parse error message from response
-          String errorMessage = 'Failed to ${_isEditMode ? 'update' : 'save'} address: ${response.statusCode}';
+          String errorMessage =
+              'Failed to ${_isEditMode ? 'update' : 'save'} address: ${response.statusCode}';
           try {
             final errorData = jsonDecode(response.body);
             if (errorData['message'] != null) {
@@ -168,7 +178,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
           } catch (e) {
             // Error parsing response
           }
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(errorMessage),
@@ -184,10 +194,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
         );
       }
     }
@@ -215,7 +222,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                 ),
               ),
               const SizedBox(height: 24),
-              
+
               // Nickname
               TextFormField(
                 controller: _nicknameController,
@@ -233,7 +240,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Delivery Area
               TextFormField(
                 controller: _deliveryAreaController,
@@ -251,7 +258,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Complete Address
               TextFormField(
                 controller: _completeAddressController,
@@ -270,7 +277,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Contact Number
               TextFormField(
                 controller: _contactNoController,
@@ -292,7 +299,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Delivery Instructions
               TextFormField(
                 controller: _deliveryInstructionsController,
@@ -311,14 +318,16 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Latitude and Longitude
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
                       controller: _latitudeController,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'Latitude',
                         hintText: '28.2323232',
@@ -337,7 +346,9 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                   Expanded(
                     child: TextFormField(
                       controller: _longitudeController,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'Longitude',
                         hintText: '82.123434',
@@ -355,7 +366,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                 ],
               ),
               const SizedBox(height: 32),
-              
+
               // Submit Button
               ElevatedButton(
                 onPressed: _isLoading ? null : _submitAddress,

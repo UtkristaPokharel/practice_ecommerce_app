@@ -25,10 +25,7 @@ class _OtpVerificationState extends State<OtpVerification> {
     6,
     (index) => TextEditingController(),
   );
-  final List<FocusNode> _focusNodes = List.generate(
-    6,
-    (index) => FocusNode(),
-  );
+  final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
 
   bool _isLoading = false;
   bool _isResending = false;
@@ -91,8 +88,9 @@ class _OtpVerificationState extends State<OtpVerification> {
         if (isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content:
-                  Text('OTP Verified Successfully! Welcome ${widget.firstName}'),
+              content: Text(
+                'OTP Verified Successfully! Welcome ${widget.firstName}',
+              ),
               backgroundColor: Colors.green,
             ),
           );
@@ -104,7 +102,9 @@ class _OtpVerificationState extends State<OtpVerification> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(data['message'] ?? 'Invalid OTP. Please try again.'),
+              content: Text(
+                data['message'] ?? 'Invalid OTP. Please try again.',
+              ),
               backgroundColor: Colors.red,
             ),
           );
@@ -113,7 +113,9 @@ class _OtpVerificationState extends State<OtpVerification> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(data['message'] ?? 'Verification failed. Please try again.'),
+            content: Text(
+              data['message'] ?? 'Verification failed. Please try again.',
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -121,10 +123,7 @@ class _OtpVerificationState extends State<OtpVerification> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: $e'),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
       );
     } finally {
       setState(() => _isLoading = false);
@@ -135,7 +134,9 @@ class _OtpVerificationState extends State<OtpVerification> {
     if (_resendCountdown > 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Please wait $_resendCountdown seconds before resending'),
+          content: Text(
+            'Please wait $_resendCountdown seconds before resending',
+          ),
           backgroundColor: Colors.orange,
         ),
       );
@@ -191,10 +192,7 @@ class _OtpVerificationState extends State<OtpVerification> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: $e'),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
       );
     } finally {
       setState(() => _isResending = false);
@@ -405,8 +403,9 @@ class _OtpVerificationState extends State<OtpVerification> {
                               Text(
                                 "Didn't receive the code? ",
                                 style: TextStyle(
-                                  color:
-                                      isDark ? Colors.white70 : Colors.black87,
+                                  color: isDark
+                                      ? Colors.white70
+                                      : Colors.black87,
                                   fontSize: 14,
                                 ),
                               ),

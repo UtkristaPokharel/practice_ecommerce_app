@@ -13,6 +13,7 @@ import 'package:ecommerce_practice/profilepages/edit_profile.dart';
 import 'package:ecommerce_practice/profilepages/shipping_address.dart';
 import 'package:ecommerce_practice/profilepages/my_orders.dart';
 import 'package:ecommerce_practice/profilepages/my_address.dart';
+import 'package:ecommerce_practice/profilepages/password_reset.dart';
 import 'package:ecommerce_practice/controller/profile_controller.dart';
 
 void main() async {
@@ -73,6 +74,7 @@ class _MyAppState extends State<MyApp> {
             '/shipping-address': (context) => const ShippingAddressPage(),
             '/my-orders': (context) => const MyOrdersPage(),
             '/my-address': (context) => const MyAddressPage(),
+            '/password-reset': (context) => const PasswordResetPage(),
           },
           home: const MyLogin(),
         );

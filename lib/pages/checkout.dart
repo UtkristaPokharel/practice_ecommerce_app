@@ -156,10 +156,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
           // Get order ID from the result - try multiple possible keys
           String orderId = 'N/A';
 
-          // Debug: print the entire result to see what we're getting
-          print('📦 Full API result: $result');
-          print('📦 Result data: ${result['data']}');
-
           if (result['data'] != null) {
             final data = result['data'];
             // Check for nested data structure first
@@ -186,8 +182,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 result['id']?.toString() ??
                 'N/A';
           }
-
-          print('📦 Extracted order ID: $orderId');
 
           // Get order name (first item or multiple items description)
           String? orderName;

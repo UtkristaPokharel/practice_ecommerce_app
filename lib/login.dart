@@ -254,6 +254,91 @@ class _MyLoginState extends State<MyLogin> {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(height: 30),
+                                // Divider with "OR" text
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Divider(
+                                        color: isDark
+                                            ? Colors.white54
+                                            : Colors.grey.shade600,
+                                        thickness: 1,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Text(
+                                        'OR',
+                                        style: TextStyle(
+                                          color: isDark
+                                              ? Colors.white70
+                                              : Colors.grey.shade700,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Divider(
+                                        color: isDark
+                                            ? Colors.white54
+                                            : Colors.grey.shade600,
+                                        thickness: 1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                // Google Sign In Button
+                                OutlinedButton(
+                                  onPressed: () {
+                                    // TODO: Implement Google Sign In
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            'Google Sign In - Coming Soon!'),
+                                      ),
+                                    );
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: isDark
+                                        ? Colors.grey.shade800
+                                        : Colors.white,
+                                    side: BorderSide(
+                                      color: isDark
+                                          ? Colors.grey.shade600
+                                          : Colors.grey.shade300,
+                                      width: 1,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/google_logo.png',
+                                        height: 24,
+                                        width: 24,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        'Sign in with Google',
+                                        style: TextStyle(
+                                          color: isDark
+                                              ? Colors.white
+                                              : Colors.black87,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),

@@ -15,10 +15,11 @@ import 'package:ecommerce_practice/profilepages/my_orders.dart';
 import 'package:ecommerce_practice/profilepages/my_address.dart';
 import 'package:ecommerce_practice/profilepages/password_reset.dart';
 import 'package:ecommerce_practice/controller/profile_controller.dart';
+import 'package:ecommerce_practice/forgot_password.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Load saved user data on app startup with error handling
   try {
     await ProfileController.loadUserData();
@@ -26,7 +27,7 @@ void main() async {
     print('Warning: Could not load user data on startup: $e');
     // App will continue to run, user can login normally
   }
-  
+
   runApp(const MyApp());
 }
 
@@ -75,6 +76,7 @@ class _MyAppState extends State<MyApp> {
             '/my-orders': (context) => const MyOrdersPage(),
             '/my-address': (context) => const MyAddressPage(),
             '/password-reset': (context) => const PasswordResetPage(),
+            '/forgot-password': (context) => const ForgotPasswordPage(),
           },
           home: const MyLogin(),
         );

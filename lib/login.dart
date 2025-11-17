@@ -23,9 +23,9 @@ class _MyLoginState extends State<MyLogin> {
     final password = _passwordController.text.trim();
 
     if (username.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter all fields')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please enter all fields')));
       return;
     }
 
@@ -51,24 +51,25 @@ class _MyLoginState extends State<MyLogin> {
 
       final data = jsonDecode(response.body);
 
-      if ((response.statusCode == 200 || response.statusCode == 203) && 
+      if ((response.statusCode == 200 || response.statusCode == 203) &&
           (data['status'] == true || data['success'] == true)) {
         final userData = data['data'] ?? data['user'];
         final userName = userData?['first_name'] ?? userData?['name'] ?? 'User';
         final apiToken = data['api_token'];
-        
+
         if (userData != null) {
           final Map<String, dynamic> completeUserData = Map.from(userData);
           if (RegExp(r'^\d+$').hasMatch(username)) {
             completeUserData['mobile_no'] = username;
           }
-          await ProfileController.setUserData(completeUserData, token: apiToken);
+          await ProfileController.setUserData(
+            completeUserData,
+            token: apiToken,
+          );
         }
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Login Successful! Welcome $userName'),
-          ),
+          SnackBar(content: Text('Login Successful! Welcome $userName')),
         );
 
         Navigator.pushReplacementNamed(context, '/home');
@@ -78,9 +79,9 @@ class _MyLoginState extends State<MyLogin> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -119,7 +120,11 @@ class _MyLoginState extends State<MyLogin> {
                   padding: const EdgeInsets.only(left: 35, top: 130),
                   child: const Text(
                     'Welcome\nBack',
-                    style: TextStyle(color: Colors.white, fontSize: 35, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 SingleChildScrollView(
@@ -203,7 +208,8 @@ class _MyLoginState extends State<MyLogin> {
                                               color: Colors.white,
                                               onPressed: _loginUser,
                                               icon: const Icon(
-                                                  Icons.arrow_forward),
+                                                Icons.arrow_forward,
+                                              ),
                                             ),
                                     ),
                                   ],
@@ -230,11 +236,9 @@ class _MyLoginState extends State<MyLogin> {
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text('Feature coming soon'),
-                                          ),
+                                        Navigator.pushNamed(
+                                          context,
+                                          '/forgot-password',
                                         );
                                       },
                                       child: Text(
@@ -277,7 +281,9 @@ class _MyLoginState extends State<MyLogin> {
                             color: Colors.white,
                             size: 26,
                           ),
-                          tooltip: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
+                          tooltip: isDark
+                              ? 'Switch to Light Mode'
+                              : 'Switch to Dark Mode',
                         ),
                       ),
                     ),

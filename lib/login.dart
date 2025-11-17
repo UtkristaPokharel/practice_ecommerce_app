@@ -17,7 +17,7 @@ class _MyLoginState extends State<MyLogin> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
-  // 🧠 LOGIN FUNCTION
+
   Future<void> _loginUser() async {
     final username = _emailcontroller.text.trim();
     final password = _passwordController.text.trim();
@@ -148,7 +148,7 @@ class _MyLoginState extends State<MyLogin> {
                                         ? Colors.grey.shade800
                                         : Colors.grey.shade200,
                                     filled: true,
-                                    hintText: 'Username or Email',
+                                    hintText: 'Enter your phone number',
                                     hintStyle: TextStyle(
                                       color: isDark
                                           ? Colors.grey.shade400

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/profile_service.dart';
+import '../controller/profile_controller.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -23,7 +24,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    // Prefill from local data (fast) then refresh from API
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initPrefillAndLoad();
+    });
+  }
+
+  Future<void> _initPrefillAndLoad() async {
+    // Try to get cached user data first so fields show immediately
+    if (ProfileController.userData == null) {
+      await ProfileController.loadUserData();
+    }
+
+    final local = ProfileController.userData;
+    if (local != null) {
+      setState(() {
+        _firstNameController.text = local['first_name'] ?? '';
+        _lastNameController.text = local['last_name'] ?? '';
+        _usernameController.text = local['username'] ?? '';
+        _emailController.text = local['email'] ?? '';
+        _isLoadingProfile = false; // we have something to show
+      });
+    }
+
+    // Always refresh from server to get latest values
+    await _loadProfile();
   }
 
   @override
@@ -36,9 +61,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _loadProfile() async {
-    setState(() {
-      _isLoadingProfile = true;
-    });
+    // If we already have prefilled values, don't show the spinner; otherwise show it
+    final hadPrefill = _firstNameController.text.isNotEmpty ||
+        _lastNameController.text.isNotEmpty ||
+        _usernameController.text.isNotEmpty ||
+        _emailController.text.isNotEmpty;
+
+    if (!hadPrefill) {
+      setState(() {
+        _isLoadingProfile = true;
+      });
+    }
 
     final profile = await ProfileService.getProfile();
 
@@ -51,13 +84,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
         _isLoadingProfile = false;
       });
     } else {
-      setState(() {
-        _isLoadingProfile = false;
-      });
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Failed to load profile")));
+      if (!hadPrefill) {
+        setState(() {
+          _isLoadingProfile = false;
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("Failed to load profile")));
+        }
       }
     }
   }

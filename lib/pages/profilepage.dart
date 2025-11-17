@@ -28,12 +28,27 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await _picker.pickImage(source: source);
-    if (pickedFile != null) {
-      profileImageNotifier.value = File(pickedFile.path);
-      setState(() {});
+    try {
+      final pickedFile = await _picker.pickImage(source: source);
+      if (pickedFile != null) {
+        profileImageNotifier.value = File(pickedFile.path);
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to pick image: $e')),
+        );
+      }
+    } finally {
+      // Safely pop the modal bottom sheet if the widget is still mounted
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
     }
-    Navigator.pop(context);
   }
 
   void _showImageSourceSelection() {
@@ -43,7 +58,9 @@ class _MyProfileState extends State<MyProfile> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => SafeArea(
+      isDismissible: true,
+      enableDrag: true,
+      builder: (BuildContext modalContext) => SafeArea(
         child: Wrap(
           children: [
             ListTile(

@@ -68,4 +68,9 @@ class ProfileController {
       '';
   static String? get token => authToken;
   static int? get userId => userData?['id'];
+  static int get rewardPoints =>
+      userData?['reward_points'] ??
+      userData?['rewards'] ??
+      userData?['points'] ??
+      0;
 }

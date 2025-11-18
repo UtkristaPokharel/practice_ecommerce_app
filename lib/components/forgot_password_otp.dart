@@ -172,7 +172,7 @@ class _ForgotPasswordOtpPageState extends State<ForgotPasswordOtpPage> {
     setState(() => _isResending = true);
 
     const String url =
-        'https://ecommerce.atithyahms.com/api/ecommerce/customer/otp/send';
+        'https://ecommerce.atithyahms.com/api/ecommerce/customer/otp/resend';
 
     try {
       final response = await http.post(

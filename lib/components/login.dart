@@ -37,26 +37,59 @@ class _MyLoginState extends State<MyLogin> {
               idToken: googleAuth.idToken,
             );
 
-            final userCredential =
-                await FirebaseAuth.instance.signInWithCredential(credential);
+            try {
+              final userCredential =
+                  await FirebaseAuth.instance.signInWithCredential(credential);
 
-            final firebaseUser = userCredential.user;
-            if (firebaseUser != null) {
-              await ProfileController.setUserData({
-                'first_name': firebaseUser.displayName ?? 'User',
-                'email': firebaseUser.email,
-                'photo_url': firebaseUser.photoURL,
-                'uid': firebaseUser.uid,
-              }, token: await firebaseUser.getIdToken());
+              final firebaseUser = userCredential.user;
+              if (firebaseUser != null) {
+                final Map<String, dynamic> requestData = {
+                  "first_name": firebaseUser.displayName?.split(' ').first ?? 'User',
+                  "last_name": (firebaseUser.displayName != null && firebaseUser.displayName!.split(' ').length > 1)
+                      ? firebaseUser.displayName!.split(' ').last
+                      : '',
+                  "mobile_no": "",
+                  "email": firebaseUser.email,
+                  "profile_image": firebaseUser.photoURL ?? "",
+                  "provider_id": firebaseUser.uid,
+                  "device_token": "eEcu_X4XMkspr7fsv6IlrL:APA91bFcUP60TtS7Nf-WMBhpxhFbXLuzYvVmo6e7Iczct6oNH3XUFrM1k0J2sr5pkQ-RGbF7Sssf7JWY5CZnEiApFnq5lvj4MajFpKZ7aqr32Jzxn1IR6W_zoJO7-vl-163q3xnEQ9QS",
+                };
 
+                // Send data to the API
+                final response = await http.post(
+                  Uri.parse(
+                      'https://ecommerce.atithyahms.com/api/v2/ecommerce/customer/google/login'),
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                  },
+                  body: jsonEncode(requestData),
+                );
+
+                print('API Response: ${response.statusCode} - ${response.body}');
+                if (response.statusCode == 200) {
+                  print('Navigation to home page.');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Signed in as ${firebaseUser.displayName}')),
+                  );
+
+                  Navigator.pushReplacementNamed(context, '/home');
+                } else {
+                  print('API Error: ${response.body}');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('API Error: ${response.body}')),
+                  );
+                }
+              }
+            } catch (e) {
+              print('Firebase sign-in failed: $e');
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Signed in as ${firebaseUser.displayName}')),
+                SnackBar(content: Text('Firebase sign-in failed: $e')),
               );
-
-              Navigator.pushReplacementNamed(context, '/home');
             }
           }
         }).onError((error) {
+          print('Google Sign-In event error: $error');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Google Sign-In failed: $error')),
           );
@@ -67,6 +100,7 @@ class _MyLoginState extends State<MyLogin> {
         );
       }
     } catch (e) {
+      print('Google Sign-In initialization failed: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Google Sign-In failed: $e')),
       );

@@ -22,11 +22,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
+    print('Initializing Firebase...');
     await Firebase.initializeApp();
+    print('Firebase initialized successfully.');
   } catch (e) {
-    print('Warning: Firebase.initializeApp() failed: $e');
+    print('Error during Firebase initialization: $e');
   }
-
 
   try {
     await ProfileController.loadUserData();

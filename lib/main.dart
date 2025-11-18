@@ -3,6 +3,7 @@ import 'package:ecommerce_practice/pages/categories.dart';
 import 'package:ecommerce_practice/components/login.dart';
 import 'package:ecommerce_practice/components/signup.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:ecommerce_practice/home.dart';
 import 'package:ecommerce_practice/pages/favourites.dart';
 import 'package:ecommerce_practice/pages/profilepage.dart';
@@ -19,6 +20,14 @@ import 'package:ecommerce_practice/components/forgot_password.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase (requires `GoogleService-Info.plist` on iOS)
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    // If Firebase init fails, print a warning but continue so the app can still run
+    print('Warning: Firebase.initializeApp() failed: $e');
+  }
 
   // Load saved user data on app startup with error handling
   try {

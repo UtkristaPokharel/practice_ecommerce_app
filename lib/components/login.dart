@@ -17,6 +17,18 @@ class _MyLoginState extends State<MyLogin> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
 
+  Future<void> _signInWithGoogle() async {
+    // Placeholder until Google Sign-In API usage is confirmed for the
+    // installed `google_sign_in` package version. This avoids compile
+    // errors while you finish iOS native setup (GoogleService-Info.plist,
+    // URL schemes, Firebase Console). When you're ready, I can update this
+    // to use the correct API for `google_sign_in` and `firebase_auth`.
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text(
+          'Google Sign-In not configured. Add GoogleService-Info.plist and run setup.'),
+    ));
+  }
+
 
   Future<void> _loginUser() async {
     final username = _emailcontroller.text.trim();
@@ -292,15 +304,7 @@ class _MyLoginState extends State<MyLogin> {
                                 const SizedBox(height: 20),
                                 // Google Sign In Button
                                 OutlinedButton(
-                                  onPressed: () {
-                                    // TODO: Implement Google Sign In
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                            'Google Sign In - Coming Soon!'),
-                                      ),
-                                    );
-                                  },
+                                  onPressed: _signInWithGoogle,
                                   style: OutlinedButton.styleFrom(
                                     backgroundColor: isDark
                                         ? Colors.grey.shade800

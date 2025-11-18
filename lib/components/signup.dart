@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'controller/theme_controller.dart';
+import '../controller/theme_controller.dart';
 import 'otp_verification.dart';
 
 class Mysignup extends StatefulWidget {

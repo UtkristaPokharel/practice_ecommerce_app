@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/searchbar.dart';
 import 'package:ecommerce_practice/controller/profile_controller.dart';
-import 'package:ecommerce_practice/popular_products_widget.dart';
+import 'package:ecommerce_practice/components/popular_products_widget.dart';
 import 'package:ecommerce_practice/pages/popular_products.dart';
-import 'package:ecommerce_practice/banner_carousel.dart';
+import 'package:ecommerce_practice/components/banner_carousel.dart';
 
 class HomePage extends StatefulWidget {
   final String initialSearchQuery;

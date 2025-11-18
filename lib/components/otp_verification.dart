@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
-import 'controller/theme_controller.dart';
+import '../controller/theme_controller.dart';
 
 class OtpVerification extends StatefulWidget {
   final String mobileNumber;

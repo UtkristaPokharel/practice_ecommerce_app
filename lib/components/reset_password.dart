@@ -1,32 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'controller/theme_controller.dart';
-import 'forgot_password_otp.dart';
+import '../controller/theme_controller.dart';
 
-class ForgotPasswordPage extends StatefulWidget {
-  const ForgotPasswordPage({super.key});
+class ResetPasswordPage extends StatefulWidget {
+  final String bearerToken;
+  final String mobileNumber;
+
+  const ResetPasswordPage({
+    super.key,
+    required this.bearerToken,
+    required this.mobileNumber,
+  });
 
   @override
-  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _isLoading = false;
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
-  Future<void> _sendOtp() async {
+  Future<void> _resetPassword() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    final mobileNumber = _mobileController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: const [
+              Icon(Icons.warning, color: Colors.white),
+              SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Passwords do not match',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.orange.shade600,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+      return;
+    }
 
     setState(() => _isLoading = true);
 
     const String url =
-        'https://ecommerce.atithyahms.com/api/ecommerce/customer/password/forgot';
+        'https://ecommerce.atithyahms.com/api/ecommerce/customer/password/reset';
 
     try {
       final response = await http.post(
@@ -34,55 +77,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${widget.bearerToken}',
         },
-        body: jsonEncode({'mobile_no': mobileNumber}),
+        body: jsonEncode({
+          'password': password,
+          'password_confirmation': confirmPassword,
+        }),
       );
 
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      final data = jsonDecode(response.body);
 
-      dynamic data;
-      try {
-        data = jsonDecode(response.body);
-      } catch (e) {
-        print('JSON decode error: $e');
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.error, color: Colors.white),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Invalid response from server',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor: Colors.red.shade600,
-            duration: const Duration(seconds: 4),
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.all(16),
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
-        return;
-      }
-
-      if (!mounted) return;
-
-      if (response.statusCode == 200 ||
-          response.statusCode == 201 ||
-          response.statusCode == 203) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final isSuccess = data['status'] == true || data['success'] == true;
 
         if (isSuccess) {
@@ -94,7 +99,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'OTP sent successfully!',
+                      'Password reset successfully!',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -115,17 +120,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
           );
 
-          // Navigate to OTP verification page
-          Navigator.push(
+          // Navigate to login page after successful reset
+          Navigator.pushNamedAndRemoveUntil(
             context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  ForgotPasswordOtpPage(mobileNumber: mobileNumber),
-            ),
+            '/login',
+            (route) => false,
           );
         } else {
-          String errorMsg = data['message'] ?? 'Failed to send OTP';
-          print('API returned false: $errorMsg');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
@@ -134,7 +135,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      errorMsg,
+                      data['message'] ?? 'Failed to reset password',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -145,7 +146,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ],
               ),
               backgroundColor: Colors.red.shade600,
-              duration: const Duration(seconds: 5),
+              duration: const Duration(seconds: 4),
               behavior: SnackBarBehavior.floating,
               margin: const EdgeInsets.all(16),
               elevation: 8,
@@ -156,10 +157,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           );
         }
       } else {
-        String errorMsg =
-            data['message'] ??
-            'Failed to send OTP (Status: ${response.statusCode})';
-        print('API error status ${response.statusCode}: $errorMsg');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
@@ -168,10 +165,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    errorMsg,
+                    data['message'] ?? 'Failed to reset password',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -179,7 +176,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               ],
             ),
             backgroundColor: Colors.red.shade600,
-            duration: const Duration(seconds: 6),
+            duration: const Duration(seconds: 4),
             behavior: SnackBarBehavior.floating,
             margin: const EdgeInsets.all(16),
             elevation: 8,
@@ -190,8 +187,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         );
       }
     } catch (e) {
-      print('Error sending OTP: $e');
-      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
@@ -221,15 +216,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ),
       );
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      setState(() => _isLoading = false);
     }
   }
 
   @override
   void dispose() {
-    _mobileController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -258,7 +252,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               elevation: 0,
               leading: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/login',
+                    (route) => false,
+                  );
+                },
               ),
             ),
             body: SingleChildScrollView(
@@ -269,7 +269,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   children: [
                     const SizedBox(height: 50),
                     Text(
-                      'Forgot Password?',
+                      'Reset\nPassword',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 35,
@@ -278,7 +278,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Enter your mobile number to receive OTP',
+                      'Enter your new password',
                       style: TextStyle(color: Colors.white70, fontSize: 16),
                     ),
                     const SizedBox(height: 50),
@@ -287,8 +287,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       child: Column(
                         children: [
                           TextFormField(
-                            controller: _mobileController,
-                            keyboardType: TextInputType.phone,
+                            controller: _passwordController,
+                            obscureText: _obscurePassword,
                             style: TextStyle(
                               color: isDark ? Colors.white : Colors.black,
                             ),
@@ -297,17 +297,32 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                   ? Colors.grey.shade800
                                   : Colors.grey.shade200,
                               filled: true,
-                              hintText: 'Mobile Number',
+                              hintText: 'New Password',
                               hintStyle: TextStyle(
                                 color: isDark
                                     ? Colors.grey.shade400
                                     : Colors.grey.shade600,
                               ),
                               prefixIcon: Icon(
-                                Icons.phone,
+                                Icons.lock,
                                 color: isDark
                                     ? Colors.grey.shade400
                                     : Colors.grey.shade600,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -315,10 +330,64 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your mobile number';
+                                return 'Please enter a password';
                               }
-                              if (value.length < 10) {
-                                return 'Please enter a valid mobile number';
+                              if (value.length < 6) {
+                                return 'Password must be at least 6 characters';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 30),
+                          TextFormField(
+                            controller: _confirmPasswordController,
+                            obscureText: _obscureConfirmPassword,
+                            style: TextStyle(
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
+                            decoration: InputDecoration(
+                              fillColor: isDark
+                                  ? Colors.grey.shade800
+                                  : Colors.grey.shade200,
+                              filled: true,
+                              hintText: 'Confirm Password',
+                              hintStyle: TextStyle(
+                                color: isDark
+                                    ? Colors.grey.shade400
+                                    : Colors.grey.shade600,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.lock_outline,
+                                color: isDark
+                                    ? Colors.grey.shade400
+                                    : Colors.grey.shade600,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscureConfirmPassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade600,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscureConfirmPassword =
+                                        !_obscureConfirmPassword;
+                                  });
+                                },
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please confirm your password';
+                              }
+                              if (value != _passwordController.text) {
+                                return 'Passwords do not match';
                               }
                               return null;
                             },
@@ -328,7 +397,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Send OTP',
+                                'Reset',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 27,
@@ -344,8 +413,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                       )
                                     : IconButton(
                                         color: Colors.white,
-                                        onPressed: _sendOtp,
-                                        icon: const Icon(Icons.arrow_forward),
+                                        onPressed: _resetPassword,
+                                        icon: const Icon(Icons.check),
                                       ),
                               ),
                             ],

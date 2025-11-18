@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../grid.dart';
+import '../components/grid.dart';
 // import '../searchbar.dart';
 
 class PopularProductsPage extends StatefulWidget {

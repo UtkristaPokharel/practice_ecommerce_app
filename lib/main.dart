@@ -1,7 +1,7 @@
 import 'package:ecommerce_practice/pages/cart.dart';
 import 'package:ecommerce_practice/pages/categories.dart';
-import 'package:ecommerce_practice/login.dart';
-import 'package:ecommerce_practice/signup.dart';
+import 'package:ecommerce_practice/components/login.dart';
+import 'package:ecommerce_practice/components/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_practice/home.dart';
 import 'package:ecommerce_practice/pages/favourites.dart';
@@ -15,7 +15,7 @@ import 'package:ecommerce_practice/profilepages/my_orders.dart';
 import 'package:ecommerce_practice/profilepages/my_address.dart';
 import 'package:ecommerce_practice/profilepages/password_reset.dart';
 import 'package:ecommerce_practice/controller/profile_controller.dart';
-import 'package:ecommerce_practice/forgot_password.dart';
+import 'package:ecommerce_practice/components/forgot_password.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

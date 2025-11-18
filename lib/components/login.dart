@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../controller/profile_controller.dart';
 import '../controller/theme_controller.dart';
 
@@ -18,15 +20,59 @@ class _MyLoginState extends State<MyLogin> {
   bool _isLoading = false;
 
   Future<void> _signInWithGoogle() async {
-    // Placeholder until Google Sign-In API usage is confirmed for the
-    // installed `google_sign_in` package version. This avoids compile
-    // errors while you finish iOS native setup (GoogleService-Info.plist,
-    // URL schemes, Firebase Console). When you're ready, I can update this
-    // to use the correct API for `google_sign_in` and `firebase_auth`.
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text(
-          'Google Sign-In not configured. Add GoogleService-Info.plist and run setup.'),
-    ));
+    setState(() => _isLoading = true);
+
+    try {
+      await GoogleSignIn.instance.initialize();
+
+      if (GoogleSignIn.instance.supportsAuthenticate()) {
+        await GoogleSignIn.instance.authenticate(scopeHint: ['email']);
+
+        GoogleSignIn.instance.authenticationEvents.listen((event) async {
+          if (event is GoogleSignInAuthenticationEventSignIn) {
+            final GoogleSignInAccount user = event.user;
+            final GoogleSignInAuthentication googleAuth = await user.authentication;
+
+            final credential = GoogleAuthProvider.credential(
+              idToken: googleAuth.idToken,
+            );
+
+            final userCredential =
+                await FirebaseAuth.instance.signInWithCredential(credential);
+
+            final firebaseUser = userCredential.user;
+            if (firebaseUser != null) {
+              await ProfileController.setUserData({
+                'first_name': firebaseUser.displayName ?? 'User',
+                'email': firebaseUser.email,
+                'photo_url': firebaseUser.photoURL,
+                'uid': firebaseUser.uid,
+              }, token: await firebaseUser.getIdToken());
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Signed in as ${firebaseUser.displayName}')),
+              );
+
+              Navigator.pushReplacementNamed(context, '/home');
+            }
+          }
+        }).onError((error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Google Sign-In failed: $error')),
+          );
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Google Sign-In not supported on this platform.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Google Sign-In failed: $e')),
+      );
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
 

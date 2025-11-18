@@ -7,7 +7,7 @@
 	<dict>
 	<key>CFBundleURLSchemes</key>
 	<array>
-		<string>YOUR_REVERSED_CLIENT_ID</string>
+		<string>com.googleusercontent.apps.601728385548-hhslvfbr1lf5innldoq9i449tdltp7el</string>
 	</array>
 	</dict>
 	</array>
@@ -63,6 +63,8 @@
 	<string>This app needs camera access to take profile pictures.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs photo library access to select profile pictures.</string>
+	<key>GIDClientID</key>
+	<string>601728385548-hhslvfbr1lf5innldoq9i449tdltp7el.apps.googleusercontent.com</string>
 
 </dict>
 </plist>

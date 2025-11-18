@@ -269,7 +269,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   children: [
                     const SizedBox(height: 50),
                     Text(
-                      'Forgot\nPassword?',
+                      'Forgot Password?',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 35,

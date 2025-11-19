@@ -21,91 +21,90 @@ class _MyLoginState extends State<MyLogin> {
 
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
-
     try {
-      await GoogleSignIn.instance.initialize();
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        // User cancelled the sign-in
+        if (mounted) setState(() => _isLoading = false);
+        return;
+      }
 
-      if (GoogleSignIn.instance.supportsAuthenticate()) {
-        await GoogleSignIn.instance.authenticate(scopeHint: ['email']);
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-        GoogleSignIn.instance.authenticationEvents.listen((event) async {
-          if (event is GoogleSignInAuthenticationEventSignIn) {
-            final GoogleSignInAccount user = event.user;
-            final GoogleSignInAuthentication googleAuth = await user.authentication;
+      print('Google User Details: ${googleUser.email}, ${googleUser.displayName}, ${googleUser.photoUrl}');
+      print('Authentication Tokens: ID Token: ${googleAuth.idToken}');
 
-            final credential = GoogleAuthProvider.credential(
-              idToken: googleAuth.idToken,
-            );
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
 
-            try {
-              final userCredential =
-                  await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final firebaseUser = userCredential.user;
+      if (firebaseUser == null) {
+        if (mounted) setState(() => _isLoading = false);
+        return;
+      }
 
-              final firebaseUser = userCredential.user;
-              if (firebaseUser != null) {
-                final Map<String, dynamic> requestData = {
-                  "first_name": firebaseUser.displayName?.split(' ').first ?? 'User',
-                  "last_name": (firebaseUser.displayName != null && firebaseUser.displayName!.split(' ').length > 1)
-                      ? firebaseUser.displayName!.split(' ').last
-                      : '',
-                  "mobile_no": "",
-                  "email": firebaseUser.email,
-                  "profile_image": firebaseUser.photoURL ?? "",
-                  "provider_id": firebaseUser.uid,
-                  "device_token": "eEcu_X4XMkspr7fsv6IlrL:APA91bFcUP60TtS7Nf-WMBhpxhFbXLuzYvVmo6e7Iczct6oNH3XUFrM1k0J2sr5pkQ-RGbF7Sssf7JWY5CZnEiApFnq5lvj4MajFpKZ7aqr32Jzxn1IR6W_zoJO7-vl-163q3xnEQ9QS",
-                };
+      if (!mounted) return;
+      final Map<String, dynamic> requestData = {
+        "first_name": firebaseUser.displayName?.split(' ').first ?? 'User',
+        "last_name": (firebaseUser.displayName != null && firebaseUser.displayName!.split(' ').length > 1)
+            ? firebaseUser.displayName!.split(' ').last
+            : '',
+        "mobile_no": "",
+        "email": firebaseUser.email,
+        "profile_image": firebaseUser.photoURL ?? "",
+        "provider_id": firebaseUser.uid,
+        "device_token": "eEcu_X4XMkspr7fsv6IlrL:APA91bFcUP60TtS7Nf-WMBhpxhFbXLuzYvVmo6e7Iczct6oNH3XUFrM1k0J2sr5pkQ-RGbF7Sssf7JWY5CZnEiApFnq5lvj4MajFpKZ7aqr32Jzxn1IR6W_zoJO7-vl-163q3xnEQ9QS",
+      };
 
-                // Send data to the API
-                final response = await http.post(
-                  Uri.parse(
-                      'https://ecommerce.atithyahms.com/api/v2/ecommerce/customer/google/login'),
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                  },
-                  body: jsonEncode(requestData),
-                );
+      // Send data to the API
+      final response = await http.post(
+        Uri.parse('https://ecommerce.atithyahms.com/api/v2/ecommerce/customer/google/login'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode(requestData),
+      );
 
-                print('API Response: ${response.statusCode} - ${response.body}');
-                if (response.statusCode == 200) {
-                  print('Navigation to home page.');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Signed in as ${firebaseUser.displayName}')),
-                  );
+      print('API Response: ${response.statusCode} - ${response.body}');
+      if (!mounted) return;
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final userData = data['data'] ?? data['user'];
+        final apiToken = data['api_token'];
 
-                  Navigator.pushReplacementNamed(context, '/home');
-                } else {
-                  print('API Error: ${response.body}');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('API Error: ${response.body}')),
-                  );
-                }
-              }
-            } catch (e) {
-              print('Firebase sign-in failed: $e');
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Firebase sign-in failed: $e')),
-              );
-            }
-          }
-        }).onError((error) {
-          print('Google Sign-In event error: $error');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Google Sign-In failed: $error')),
+        if (userData != null) {
+          final Map<String, dynamic> completeUserData = Map.from(userData);
+          await ProfileController.setUserData(
+            completeUserData,
+            token: apiToken,
           );
-        });
-      } else {
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Google Sign-In not supported on this platform.')),
+          SnackBar(content: Text('Signed in as ${firebaseUser.displayName}')),
+        );
+
+        print('Attempting to navigate to /home');
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        print('API Error: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('API Error: ${response.body}')),
         );
       }
     } catch (e) {
-      print('Google Sign-In initialization failed: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Google Sign-In failed: $e')),
-      );
+      print('Google Sign-In failed: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Google Sign-In failed: $e')),
+        );
+      }
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -115,6 +114,7 @@ class _MyLoginState extends State<MyLogin> {
     final password = _passwordController.text.trim();
 
     if (username.isEmpty || password.isEmpty) {
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Please enter all fields')));
@@ -143,6 +143,7 @@ class _MyLoginState extends State<MyLogin> {
 
       final data = jsonDecode(response.body);
 
+      if (!mounted) return;
       if ((response.statusCode == 200 || response.statusCode == 203) &&
           (data['status'] == true || data['success'] == true)) {
         final userData = data['data'] ?? data['user'];
@@ -171,11 +172,13 @@ class _MyLoginState extends State<MyLogin> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 

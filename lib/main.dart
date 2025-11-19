@@ -17,13 +17,17 @@ import 'package:ecommerce_practice/profilepages/my_address.dart';
 import 'package:ecommerce_practice/profilepages/password_reset.dart';
 import 'package:ecommerce_practice/controller/profile_controller.dart';
 import 'package:ecommerce_practice/components/forgot_password.dart';
+import 'firebase_options.dart';
+import 'services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
     print('Initializing Firebase...');
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+            options: DefaultFirebaseOptions.currentPlatform,
+    );
     print('Firebase initialized successfully.');
   } catch (e) {
     print('Error during Firebase initialization: $e');
@@ -46,6 +50,25 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool _isLoggedIn = false;
+  bool _checkedLogin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final loggedIn = await AuthService.isLoggedIn();
+    if (mounted) {
+      setState(() {
+        _isLoggedIn = loggedIn;
+        _checkedLogin = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
@@ -71,6 +94,15 @@ class _MyAppState extends State<MyApp> {
                 ),
         );
 
+        if (!_checkedLogin) {
+          // Show splash/loading while checking login
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+          );
+        }
+
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: themeData,
@@ -85,7 +117,7 @@ class _MyAppState extends State<MyApp> {
             '/password-reset': (context) => const PasswordResetPage(),
             '/forgot-password': (context) => const ForgotPasswordPage(),
           },
-          home: const MyLogin(),
+          home: _isLoggedIn ? const HomeWrapper() : const MyLogin(),
         );
       },
     );

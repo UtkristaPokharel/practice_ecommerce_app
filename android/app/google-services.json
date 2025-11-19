@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "601728385548",
+    "project_id": "ecommerce-practice-be506",
+    "storage_bucket": "ecommerce-practice-be506.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601728385548:android:8d6240687178c97110e429",
+        "android_client_info": {
+          "package_name": "com.example.ecommerce_practice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "601728385548-ue45knlosfmbcqdu9h4a0tp6ulf18h3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-KcpDRfBwFilqKbOrCML3jXAK8mB9daQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "601728385548-ue45knlosfmbcqdu9h4a0tp6ulf18h3f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "601728385548-hhslvfbr1lf5innldoq9i449tdltp7el.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ecommercePractice"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

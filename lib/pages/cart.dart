@@ -98,129 +98,130 @@ class CartPage extends StatelessWidget {
                         horizontal: 10,
                         vertical: 10,
                       ),
-                      child: ListTile(
-                        leading: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Transform.scale(
-                              scale: 0.8,
-                              child: Checkbox(
-                                value: item.isSelected,
-                                onChanged: (value) {
-                                  item.isSelected = value!;
-                                  cartNotifier.value = List<CartItem>.from(
-                                    cartNotifier.value,
-                                  );
-                                },
-                              ),
-                            ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: item.imageUrl.startsWith('http')
-                                  ? Image.network(
-                                      item.imageUrl,
-                                      width: 48,
-                                      height: 48,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              const Icon(Icons.broken_image),
-                                    )
-                                  : Image.asset(
-                                      item.imageUrl,
-                                      width: 48,
-                                      height: 48,
-                                      fit: BoxFit.cover,
-                                    ),
-                            ),
-                          ],
-                        ),
-                        title: Text(
-                          item.title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                          ),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Rs ${item.price}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                                const SizedBox(width: 0),
-                                IconButton(
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints.tightFor(
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                  iconSize: 16,
-                                  splashRadius: 16,
-                                  icon: const Icon(Icons.remove),
-                                  onPressed: () {
-                                    if (item.quantity > 1) {
-                                      item.quantity--;
-                                      cartNotifier.value = List<CartItem>.from(
-                                        cartNotifier.value,
-                                      );
-                                    }
-                                  },
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                  child: Center(
-                                    child: Text(
-                                      item.quantity.toString(),
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints.tightFor(
-                                    width: 24,
-                                    height: 24,
-                                  ),
-                                  iconSize: 16,
-                                  splashRadius: 16,
-                                  icon: const Icon(Icons.add),
-                                  onPressed: () {
-                                    item.quantity++;
+                      child: IntrinsicWidth(
+                        child: ListTile(
+                          leading: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Transform.scale(
+                                scale: 0.8,
+                                child: Checkbox(
+                                  value: item.isSelected,
+                                  onChanged: (value) {
+                                    item.isSelected = value!;
                                     cartNotifier.value = List<CartItem>.from(
                                       cartNotifier.value,
                                     );
                                   },
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        trailing: IconButton(
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          icon: const Icon(Icons.delete),
-                          color: Colors.red,
-                          onPressed: () => removeCartItem(item),
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => DescriptionPage(
-                                title: item.title,
-                                imageUrl: item.imageUrl,
-                                price: item.price.toString(),
-                                description: item.description,
                               ),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: item.imageUrl.startsWith('http')
+                                    ? Image.network(
+                                        item.imageUrl,
+                                        width: 48,
+                                        height: 48,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Icon(Icons.broken_image),
+                                      )
+                                    : Image.asset(
+                                        item.imageUrl,
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
+                            ],
+                          ),
+                          title: Text(
+                            item.title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 13,
                             ),
-                          );
-                        },
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'Rs ${item.price}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  // const SizedBox(width: 0),
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints.tightFor(
+                                      width: 15,
+                                      height: 20,
+                                    ),
+                                    iconSize: 20,
+                                    splashRadius: 16,
+                                    icon: const Icon(Icons.remove),
+                                    onPressed: () {
+                                      if (item.quantity > 1) {
+                                        item.quantity--;
+                                        cartNotifier.value = List<CartItem>.from(
+                                          cartNotifier.value,
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  IntrinsicWidth(
+                                    child: Center(
+                                      child: Text(
+                                        item.quantity.toString(),
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints.tightFor(
+                                      width: 15,
+                                      height: 20,
+                                    ),
+                                    iconSize: 20,
+                                    splashRadius: 16,
+                                    icon: const Icon(Icons.add),
+                                    onPressed: () {
+                                      item.quantity++;
+                                      cartNotifier.value = List<CartItem>.from(
+                                        cartNotifier.value,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          trailing: IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            icon: const Icon(Icons.delete),
+                            color: Colors.red,
+                            onPressed: () => removeCartItem(item),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => DescriptionPage(
+                                  title: item.title,
+                                  imageUrl: item.imageUrl,
+                                  price: item.price.toString(),
+                                  description: item.description,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     );
                   },

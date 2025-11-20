@@ -52,7 +52,7 @@ class _ForgotPasswordOtpPageState extends State<ForgotPasswordOtpPage> {
 
     if (otp.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Row(
             children: const [
               Icon(Icons.warning, color: Colors.white),
@@ -70,7 +70,7 @@ class _ForgotPasswordOtpPageState extends State<ForgotPasswordOtpPage> {
             ],
           ),
           backgroundColor: Colors.orange,
-          duration: const Duration(seconds: 3),
+          duration: Duration(seconds: 3),
         ),
       );
       return;
@@ -101,7 +101,7 @@ class _ForgotPasswordOtpPageState extends State<ForgotPasswordOtpPage> {
 
           if (_bearerToken != null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+             const SnackBar(
                 content: Row(
                   children: const [
                     Icon(Icons.check_circle, color: Colors.white),
@@ -119,7 +119,7 @@ class _ForgotPasswordOtpPageState extends State<ForgotPasswordOtpPage> {
                   ],
                 ),
                 backgroundColor: Colors.green,
-                duration: const Duration(seconds: 2),
+                duration: Duration(seconds: 2),
               ),
             );
 
@@ -134,7 +134,7 @@ class _ForgotPasswordOtpPageState extends State<ForgotPasswordOtpPage> {
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text('Failed to get authentication token'),
                 backgroundColor: Colors.red,
               ),

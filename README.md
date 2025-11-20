@@ -1,154 +1,111 @@
 # 🛒 E-Commerce Mobile Application
 
-A feature-rich e-commerce mobile application built with Flutter, providing a seamless shopping experience with product browsing, cart management, order placement, and user profile management.
+Flutter + Firebase powered e-commerce experience that covers the full buyer journey: onboarding, authentication, catalog exploration, cart + checkout, order tracking, and profile management. The project ships with real API integration, token-based security, and production-ready theming.
 
-## 📱 Features
+## ✨ Feature Highlights
 
-### 🔐 Authentication
-- User login and signup
-- OTP verification
-- Secure token-based authentication
-- Google sign-in integration
+### Authentication & Security
+- Email/password signup + login with OTP verification and resend flow
+- Google sign-in using Firebase Auth + REST fallback
+- Secure token persistence via `SharedPreferences` with in-memory fallback in `AuthService`
 
-### 🏪 Shopping Experience
-- Browse products with grid and list views
-- Product categories
-- Product search functionality
-- Product details with descriptions
-- Popular products carousel
-- Banner carousel for promotions
+### Shopping Journey
+- Grid and list product feeds with search, categories, and banners
+- Popular product carousel and detailed product screen
+- Wishlist/favorites, cart quantity management, and bulk item selection
 
-### 🛍️ Cart & Checkout
-- Add/remove items from cart
-- Adjust product quantities
-- Select multiple items for checkout
-- Address management (add, edit, delete)
-- Order placement with selected delivery address
-- Order success dialog with order details
+### Checkout & Orders
+- Address CRUD, default address selection, and order summary review
+- Order placement, order-success dialog, and ongoing order tracking
+- Order history with per-item breakdown and status chips
 
-### 📦 Order Management
-- View order history
-- Track order status
-- Order details with itemized list
+### Profile & UI Polish
+- Profile data editing, profile photo upload, and settings/preferences
+- Dark/light theme toggle, curved bottom navigation bar, and smooth animated transitions
+- Responsive layout tuned for Android, iOS, and Web (minor UI tweaks pending on web)
 
-### 👤 User Profile
-- View and edit profile information
-- Profile picture upload
-- Manage delivery addresses
-- View favorites/wishlist
-- Order history
-- Settings and preferences
-- Logout functionality
-
-### 🎨 UI/UX Features
-- Dark mode support with theme toggle
-- Curved bottom navigation bar
-- Smooth animations and transitions
-- Responsive design
-- Material Design 3 components
-
-## 🛠️ Technologies Used
-
-- **Flutter** - Cross-platform mobile development framework
-- **Dart** - Programming language
-- **HTTP** - REST API integration
-- **Shared Preferences** - Local data storage
-- **Image Picker** - Profile image upload
-- **File Picker** - Document selection
-- **Curved Navigation Bar** - Custom navigation UI
-
-## 📂 Project Structure
+## 🧱 Architecture Snapshot
 
 ```
 lib/
-├── main.dart                          # App entry point
-├── controller/                        # State management
-│   ├── navigation_controller.dart
-│   ├── profile_controller.dart
-│   └── theme_controller.dart
-├── pages/                             # Main app screens
-│   ├── cart.dart
-│   ├── categories.dart
-│   ├── checkout.dart
-│   ├── description.dart
-│   ├── favourites.dart
-│   ├── popular_products.dart
-│   └── profilepage.dart
-├── profilepages/                      # Profile-related screens
-│   ├── edit_profile.dart
-│   ├── my_address.dart
-│   ├── my_orders.dart
-│   └── logout.dart
-├── services/                          # API services
-│   ├── auth_service.dart
-│   └── order_service.dart
-├── widgets/                           # Reusable widgets
-│   └── order_success_dialog.dart
-├── login.dart                         # Authentication screens
-├── signup.dart
-├── otp_verification.dart
-├── home.dart                          # Home screen
-├── banner_carousel.dart               # UI components
-├── bottom_navbar.dart
-├── grid.dart
-├── searchbar.dart
-└── popular_products_widget.dart
+├── main.dart                     # App entry point + theme wiring
+├── controller/                   # Lightweight state controllers
+├── pages/                        # Core shopping flows (home, cart, checkout, etc.)
+├── profilepages/                 # Profile/account related screens
+├── services/                     # API helpers + auth/order services
+├── widgets/                      # Shared presentation widgets
+├── components/                   # Feature-specific UI components
+├── firebase_options.dart         # Firebase configuration (generated)
+└── bottom_navbar.dart, home.dart # Shell/navigation
 ```
+
+`ApiHelper` centralizes authenticated requests while `AuthService` manages secure token storage and fallbacks for environments where `SharedPreferences` is unavailable (e.g., web hot reload).
+
+## 🛠️ Tech Stack
+- Flutter 3.24+ / Dart 3.9 (see `environment.sdk`)
+- Firebase Auth + `google_sign_in`
+- REST integration via `http`
+- Local persistence with `shared_preferences`
+- Device access: `image_picker`, `file_picker`
+- Custom UI: `curved_navigation_bar`, Material 3 components
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+- Flutter SDK ^3.9.2 (verify with `flutter --version`)
+- Xcode 15+ (macOS) and Android Studio / platform tools
+- A Firebase project (for Google sign-in) and API credentials for `ecommerce.atithyahms.com`
 
-- Flutter SDK (^3.9.2 or higher)
-- Dart SDK
-- Android Studio / VS Code
-- iOS Simulator (for Mac) or Android Emulator
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/UtkristaPokharel/practice_ecommerce_app.git
-   cd ecommerce_practice
-   ```
-
-2. **Install dependencies**
-   ```bash
-   flutter pub get
-   ```
-
-3. **Run the app**
-   ```bash
-   flutter run
-   ```
-
-### Build for Production
-
-**Android:**
+### Install & Run
 ```bash
-flutter build apk --release
+git clone https://github.com/UtkristaPokharel/practice_ecommerce_app.git
+cd ecommerce_practice
+flutter pub get
+flutter run   # select your target device
 ```
 
-**iOS:**
+### Production Builds
 ```bash
-flutter build ios --release
+flutter build apk  --release
+flutter build ios  --release  # requires codesigning setup
+flutter build web  --release  # optional, UI polish pending
 ```
 
-## 🔌 API Integration
+## ⚙️ Configuration
 
-The app integrates with the backend API at:
-```
-https://sara24shopping.com/api/
-```
+### 1. API Base URL
+- Default base lives in `lib/services/api_helper.dart` (`https://ecommerce.atithyahms.com/api/ecommerce`).
+- Order placement uses the v2 endpoints in `lib/services/order_service.dart`.
+- Update these constants if you deploy your own backend.
 
-### Key Endpoints:
-- `/auth/register` - User registration
-- `/auth/login` - User login
-- `/ecommerce/customer/address` - Address management
-- `/ecommerce/customer/orders/place` - Order placement
-- `/ecommerce/customer/orders/track` - Order tracking
+### 2. Firebase Setup
+1. Create a Firebase project and enable Email/Password + Google providers.
+2. Download `google-services.json` into `android/app/` and `GoogleService-Info.plist` into `ios/Runner/`.
+3. Run `dart run flutterfire_cli configure` to regenerate `lib/firebase_options.dart`.
+4. Rebuild the app so Firebase native files are bundled (`flutter clean && flutter run`).
 
-## 📦 Dependencies
+### 3. Assets & Icons
+- Custom assets live under `assets/` (login/signup illustrations, Google logo, etc.).
+- To refresh launcher icons, update `assets/applogo.png` and run `flutter pub run flutter_launcher_icons`.
+
+## 🔌 API Surface
+
+All calls hit `https://saara24shopping.com/api` (see files referenced below).
+
+| Purpose | Method | Endpoint | Source |
+| --- | --- | --- | --- |
+| Register | POST | `/v2/ecommerce/customer/register` | `components/signup.dart` |
+| Login | POST | `/v2/ecommerce/customer/login` | `components/login.dart` |
+| Google login | POST | `/v2/ecommerce/customer/google/login` | `components/login.dart` |
+| OTP verify/resend | POST | `/ecommerce/customer/otp/verify`, `/otp/resend` | `components/otp_verification.dart` |
+| Forgot/Reset password | POST | `/ecommerce/customer/password/forgot`, `/password/reset` | `components/forgot_password*.dart` |
+| Products list/popular | GET | `/ecommerce/products/all`, `/products/popular` | `components/grid.dart`, `pages/popular_products.dart` |
+| Address CRUD | GET/POST | `/ecommerce/customer/address`, `/address/save`, `/address/update` | `profilepages/*address*.dart` |
+| Place order | POST | `/v2/ecommerce/customer/orders/place` | `services/order_service.dart` |
+| Track orders | GET | `/ecommerce/customer/orders/track` | `services/order_service.dart` |
+| Fetch profile/orders | GET | `/ecommerce/customer/profile`, `/customer/orders` | `services/api_helper.dart` |
+
+## 📦 Dependencies Snapshot
 
 ```yaml
 dependencies:
@@ -159,77 +116,43 @@ dependencies:
   cupertino_icons: ^1.0.8
   curved_navigation_bar: ^1.0.6
   file_picker: ^10.3.3
+  firebase_core: ^3.0.0
+  firebase_auth: ^5.0.0
+  google_sign_in: ^6.1.5
+
+dev_dependencies:
+  flutter_test: sdk
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
 ```
 
-## 🎯 Key Features Implemented
-
-### 1. Cart Management
-- Multi-select cart items
-- Quantity adjustment
-- Total price calculation
-- Remove items from cart
-
-### 2. Checkout Flow
-- Address selection
-- Order summary
-- Order placement
-- Success dialog with order details
-
-### 3. Order Success Dialog
-- Displays order number
-- Shows order items/name
-- Displays total amount
-- Quick navigation to orders page
-
-### 4. Theme Management
-- Light/Dark mode toggle
-- Persistent theme preference
-- Smooth theme transitions
-
-### 5. Profile Management
-- Profile information display
-- Edit profile details
-- Profile picture upload
-- Address management
-
-## 🔒 Security
-
-- Secure token-based authentication
-- Token stored in SharedPreferences
-- API requests authenticated with Bearer token
-- Secure logout functionality
-
-## 📱 Supported Platforms
-
-- ✅ Android
-- ✅ iOS
-- ✅ Web -- (all functionality working need some UI changes)
+## 🧪 Testing
+- Run widget tests: `flutter test`
+- For manual QA, prefer a physical device to exercise `image_picker` and Google sign-in flows.
 
 ## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!
-
 1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create a branch: `git checkout -b feature/my-feature`
+3. Commit with context: `git commit -m "feat: add payment summary"`
+4. Push + open a PR. Include screenshots/gifs where possible.
+
+## 📱 Platform Status
+- ✅ Android (primary target)
+- ✅ iOS (tested on Simulator + physical device)
+- ⚠️ Web (functional but needs spacing tweaks)
+- 🧪 Desktop (project is generated but untested)
 
 ## 📝 License
+Educational/practice project. Contact the author before commercial use.
 
-This project is for educational and practice purposes.
-
-## 👨‍💻 Developer
-
-**Utkrista Pokharel**
-- GitHub: [@UtkristaPokharel](https://github.com/UtkristaPokharel)
+## 👤 Developer
+**Utkrista Pokharel**  ·  GitHub: [@UtkristaPokharel](https://github.com/UtkristaPokharel)
 
 ## 🙏 Acknowledgments
-
-- Flutter team for the amazing framework
-- API provided by Nct pvt ltd.
-- Flutter community for packages and support
+- Flutter & Firebase teams for the tooling
+- API provided by Nct Pvt. Ltd
+- Community package maintainers
 
 ---
 
-Made with ❤️ using Flutter
+Made with ❤️ in Flutter

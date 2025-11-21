@@ -108,13 +108,24 @@ class _MyProfileState extends State<MyProfile> {
                   ValueListenableBuilder<File?>(
                     valueListenable: profileImageNotifier,
                     builder: (context, file, _) {
-                      return CircleAvatar(
-                        radius: 60,
-                        backgroundImage: file != null
-                            ? FileImage(file)
-                            : const NetworkImage(
-                                    "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-                                  ) as ImageProvider,
+                      return ValueListenableBuilder<String?>(
+                        valueListenable: profileImageUrlNotifier,
+                        builder: (context, imageUrl, __) {
+                          ImageProvider avatarImage;
+                          if (file != null) {
+                            avatarImage = FileImage(file);
+                          } else if (imageUrl != null && imageUrl.isNotEmpty) {
+                            avatarImage = NetworkImage(imageUrl);
+                          } else {
+                            avatarImage = const NetworkImage(
+                              "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+                            );
+                          }
+                          return CircleAvatar(
+                            radius: 60,
+                            backgroundImage: avatarImage,
+                          );
+                        },
                       );
                     },
                   ),

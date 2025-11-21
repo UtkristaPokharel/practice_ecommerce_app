@@ -81,6 +81,14 @@ class _MyLoginState extends State<MyLogin> {
 
         if (userData != null) {
           final Map<String, dynamic> completeUserData = Map.from(userData);
+          final dynamic existingImage = completeUserData['profile_image'];
+          final bool hasImage =
+              existingImage is String && existingImage.trim().isNotEmpty;
+          final bool hasGooglePhoto =
+              firebaseUser.photoURL != null && firebaseUser.photoURL!.isNotEmpty;
+          if (!hasImage && hasGooglePhoto) {
+            completeUserData['profile_image'] = firebaseUser.photoURL;
+          }
           await ProfileController.setUserData(
             completeUserData,
             token: apiToken,

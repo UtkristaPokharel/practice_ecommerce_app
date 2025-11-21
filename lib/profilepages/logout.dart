@@ -102,6 +102,7 @@ class LogoutDialog {
 
   static void clearUserData() {
     profileImageNotifier.value = null;
+    profileImageUrlNotifier.value = null;
     profileNameNotifier.value = "John Doe";
   }
 }

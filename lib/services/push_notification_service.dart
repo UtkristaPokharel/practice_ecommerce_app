@@ -77,19 +77,32 @@ class PushNotificationService {
   static Future<void> _logInitialMessage() async {
     final message = await _messaging.getInitialMessage();
     if (message != null) {
-      debugPrint('[PushNotifications] App opened via notification: ${message.messageId}');
+      _logMessageDetails('initial-open', message);
     }
   }
 
   static void _handleForegroundMessage(RemoteMessage message) {
-    debugPrint('[PushNotifications] Foreground notification: ${message.messageId}');
+    _logMessageDetails('foreground', message);
   }
 
   static Future<void> handleBackgroundMessage(RemoteMessage message) async {
-    debugPrint('[PushNotifications] Background notification: ${message.messageId}');
+    _logMessageDetails('background', message);
   }
 
   static void _handleNotificationInteraction(RemoteMessage message) {
-    debugPrint('[PushNotifications] Notification tapped: ${message.messageId}');
+    _logMessageDetails('opened-app', message);
+  }
+
+  static void _logMessageDetails(String context, RemoteMessage message) {
+    final notification = message.notification;
+    final title = notification?.title ?? '(no title)';
+    final body = notification?.body ?? '(no body)';
+
+    debugPrint('[PushNotifications][$context] messageId=${message.messageId ?? '(no id)'}');
+    debugPrint('[PushNotifications][$context] title=$title');
+    debugPrint('[PushNotifications][$context] body=$body');
+    if (message.data.isNotEmpty) {
+      debugPrint('[PushNotifications][$context] data=${message.data}');
+    }
   }
 }

@@ -65,6 +65,11 @@
 	<string>This app needs photo library access to select profile pictures.</string>
 	<key>GIDClientID</key>
 	<string>601728385548-hhslvfbr1lf5innldoq9i449tdltp7el.apps.googleusercontent.com</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 
 </dict>
 </plist>

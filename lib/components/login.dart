@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../controller/profile_controller.dart';
 import '../controller/theme_controller.dart';
+import '../services/auth_service.dart';
 
 class MyLogin extends StatefulWidget {
   const MyLogin({super.key});
@@ -46,6 +47,8 @@ class _MyLoginState extends State<MyLogin> {
         return;
       }
 
+      final deviceToken = await AuthService.getDeviceToken();
+
       if (!mounted) return;
       final Map<String, dynamic> requestData = {
         "first_name": firebaseUser.displayName?.split(' ').first ?? 'User',
@@ -56,7 +59,7 @@ class _MyLoginState extends State<MyLogin> {
         "email": firebaseUser.email,
         "profile_image": firebaseUser.photoURL ?? "",
         "provider_id": firebaseUser.uid,
-        "device_token": "eEcu_X4XMkspr7fsv6IlrL:APA91bFcUP60TtS7Nf-WMBhpxhFbXLuzYvVmo6e7Iczct6oNH3XUFrM1k0J2sr5pkQ-RGbF7Sssf7JWY5CZnEiApFnq5lvj4MajFpKZ7aqr32Jzxn1IR6W_zoJO7-vl-163q3xnEQ9QS",
+        "device_token": deviceToken ?? '',
       };
 
       // Send data to the API
@@ -127,6 +130,7 @@ class _MyLoginState extends State<MyLogin> {
     setState(() => _isLoading = true);
 
     try {
+      final deviceToken = await AuthService.getDeviceToken();
       final response = await http.post(
         Uri.parse(url),
         headers: {
@@ -136,8 +140,7 @@ class _MyLoginState extends State<MyLogin> {
         body: jsonEncode({
           'username': username,
           'password': password,
-          'device_token':
-              "eyurwex5Rqy5Qvu8fz2OtV:APA91bF-C3fcf6sDkqccb2OqVt-5ADIk1rpPpAA81zJ4wQLjrmoglrvklmcSZPi2EkxvC7PjMtDPmDBaWpczQs2p4xDRfeo9aGov8_UiJxE5m70am8Fc9BEriJ8Z9_kwzpEgwe0ZnWBK",
+          'device_token': deviceToken ?? '',
         }),
       );
 

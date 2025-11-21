@@ -2,8 +2,10 @@ import 'package:ecommerce_practice/pages/cart.dart';
 import 'package:ecommerce_practice/pages/categories.dart';
 import 'package:ecommerce_practice/components/login.dart';
 import 'package:ecommerce_practice/components/signup.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:ecommerce_practice/home.dart';
 import 'package:ecommerce_practice/pages/favourites.dart';
 import 'package:ecommerce_practice/pages/profilepage.dart';
@@ -19,9 +21,17 @@ import 'package:ecommerce_practice/controller/profile_controller.dart';
 import 'package:ecommerce_practice/components/forgot_password.dart';
 import 'firebase_options.dart';
 import 'services/auth_service.dart';
+import 'services/push_notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (!kIsWeb) {
+    FirebaseMessaging.onBackgroundMessage(
+      firebaseMessagingBackgroundHandler,
+    );
+  } else {
+    print('Background messaging is not supported on web.');
+  }
 
   try {
     print('Initializing Firebase...');
@@ -31,6 +41,12 @@ void main() async {
     print('Firebase initialized successfully.');
   } catch (e) {
     print('Error during Firebase initialization: $e');
+  }
+
+  try {
+    await PushNotificationService.init();
+  } catch (e) {
+    print('Error during FCM initialization: $e');
   }
 
   try {

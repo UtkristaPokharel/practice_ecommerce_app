@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../controller/theme_controller.dart';
 import 'otp_verification.dart';
+import '../services/auth_service.dart';
 
 class Mysignup extends StatefulWidget {
   const Mysignup({super.key});
@@ -42,6 +43,7 @@ class _MysignupState extends State<Mysignup> {
         'https://ecommerce.atithyahms.com/api/v2/ecommerce/customer/register';
 
     try {
+      final deviceToken = await AuthService.getDeviceToken();
       final response = await http.post(
         Uri.parse(url),
         headers: {
@@ -53,8 +55,7 @@ class _MysignupState extends State<Mysignup> {
           'last_name': lastName,
           'mobile_no': mobile,
           'password': password,
-          'device_token':
-              'eEcu_X4XMkspr7fsv6IlrL:APA91bFcUP60TtS7Nf-WMBhpxhFbXLuzYvVmo6e7Iczct6oNH3XUFrM1k0J2sr5pkQ-RGbF7Sssf7JWY5CZnEiApFnq5lvj4MajFpKZ7aqr32Jzxn1IR6W_zoJO7-vl-163q3xnEQ9QS',
+          'device_token': deviceToken ?? '',
         }),
       );
 

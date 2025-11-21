@@ -7,12 +7,14 @@ class AuthService {
   static const String _tokenKey = 'api_token';
   static const String _userDataKey = 'user_data';
   static const String _isLoggedInKey = 'is_logged_in';
+  static const String _deviceTokenKey = 'device_token';
 
   // In-memory fallback storage (for when SharedPreferences fails)
   static String? _memoryToken;
   static Map<String, dynamic>? _memoryUserData;
   static bool _memoryIsLoggedIn = false;
   static bool _useMemoryFallback = false;
+  static String? _memoryDeviceToken;
 
   /// Get SharedPreferences instance with error handling
   static Future<SharedPreferences?> _getPrefs() async {
@@ -27,6 +29,34 @@ class AuthService {
       _useMemoryFallback = true;
       return null;
     }
+  }
+  /// Save FCM device token for push notifications
+  static Future<void> saveDeviceToken(String token) async {
+    _memoryDeviceToken = token;
+    try {
+      final prefs = await _getPrefs();
+      if (prefs != null) {
+        await prefs.setString(_deviceTokenKey, token);
+      }
+    } catch (e) {
+      print('Error saving device token to storage: $e');
+    }
+  }
+
+  /// Retrieve the stored FCM device token
+  static Future<String?> getDeviceToken() async {
+    try {
+      final prefs = await _getPrefs();
+      if (prefs != null) {
+        final token = prefs.getString(_deviceTokenKey);
+        if (token != null) {
+          return token;
+        }
+      }
+    } catch (e) {
+      print('Error getting device token from storage: $e');
+    }
+    return _memoryDeviceToken;
   }
 
   /// Save authentication token

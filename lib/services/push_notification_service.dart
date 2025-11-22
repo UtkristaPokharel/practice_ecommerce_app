@@ -16,7 +16,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 class PushNotificationService {
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  static bool _initialized = false ;
+  static bool _initialized = false;
 
   static Future<void> init() async {
     if (_initialized) return;

@@ -37,7 +37,7 @@ class _MyLoginState extends State<MyLogin> {
       print('Authentication Tokens: ID Token: ${googleAuth.idToken}');
 
       final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
+        idToken: googleAuth.idToken ,
       );
 
       final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);

@@ -53,14 +53,12 @@ class ProfileController {
     profileImageNotifier.value = null;
     profileImageUrlNotifier.value = null;
 
-    // Clear from persistent storage
     await AuthService.clearAuth();
   }
 
-  // Getters for easy access
   static String get firstName => userData?['first_name'] ?? '';
   static String get lastName => userData?['last_name'] ?? '';
-  static String get fullName => '${firstName} ${lastName}';
+  static String get fullName => '$firstName $lastName';
   static String get phone =>
       userData?['mobile_no'] ??
       userData?['phone'] ??

@@ -2,7 +2,7 @@ import 'package:ecommerce_practice/pages/cart.dart';
 import 'package:ecommerce_practice/pages/categories.dart';
 import 'package:ecommerce_practice/components/login.dart';
 import 'package:ecommerce_practice/components/signup.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -25,35 +25,14 @@ import 'services/push_notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (!kIsWeb) {
-    FirebaseMessaging.onBackgroundMessage(
-      firebaseMessagingBackgroundHandler,
-    );
-  } else {
-    print('Background messaging is not supported on web.');
-  }
 
-  try {
-    print('Initializing Firebase...');
-    await Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform,
-    );
-    print('Firebase initialized successfully.');
-  } catch (e) {
-    print('Error during Firebase initialization: $e');
-  }
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  try {
-    await PushNotificationService.init();
-  } catch (e) {
-    print('Error during FCM initialization: $e');
-  }
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  try {
-    await ProfileController.loadUserData();
-  } catch (e) {
-    print('Warning: Could not load user data on startup: $e');
-  }
+  await PushNotificationService.init();
+
+  await ProfileController.loadUserData();
 
   runApp(const MyApp());
 }
@@ -111,11 +90,8 @@ class _MyAppState extends State<MyApp> {
         );
 
         if (!_checkedLogin) {
-          // Show splash/loading while checking login
           return const MaterialApp(
-            home: Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            ),
+            home: Scaffold(body: Center(child: CircularProgressIndicator())),
           );
         }
 

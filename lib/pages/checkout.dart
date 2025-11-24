@@ -1,8 +1,11 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '../services/auth_service.dart';
 import '../services/order_service.dart';
+import '../services/notification_service.dart';
 import '../widgets/order_success_dialog.dart';
 import 'cart.dart';
 
@@ -142,6 +145,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
       });
 
       if (result['success'] == true) {
+        unawaited(
+          NotificationService.fetchAndDisplayLatestOrderNotification(),
+        );
         // Note: Orders will be fetched from the API in My Orders page
         // No need to manually add orders here anymore
 

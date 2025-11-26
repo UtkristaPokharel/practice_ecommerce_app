@@ -10,7 +10,7 @@ class BottomNavbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
-      const Icon(Icons.home, size: 30) ,
+      const Icon(Icons.home, size: 30),
       const Icon(Icons.category, size: 30),
       const Icon(Icons.favorite, size: 30),
       const Icon(Icons.shopping_cart, size: 30),
